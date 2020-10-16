@@ -1,0 +1,11 @@
+[package]
+name = "req_md"
+version = "0.1.0"
+authors = ["Benjamin Falk <bfalk@truecar.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+url = "2.1"
+reqwest = { version = "0.10", features = ["blocking"] }
