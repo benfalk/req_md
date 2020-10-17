@@ -9,3 +9,4 @@ edition = "2018"
 [dependencies]
 url = "2.1"
 reqwest = { version = "0.10", features = ["blocking"] }
+comrak = "0.8"
