@@ -13,6 +13,7 @@ exterior_color
 ```
 GET /
 Host: https://www.google.com
+Content-Type: application/json
 ```
 ```json
 {
