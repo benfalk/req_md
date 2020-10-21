@@ -12,32 +12,27 @@ pub struct Request {
 
 impl Request {
     pub fn send(&self) -> Result<Response, Error> {
-        let mut builder =
-            self.headers.iter().fold(self.builder(), |builder, header| {
-                if let Some((key, val)) = header.split_once(": ") {
-                    if key.to_lowercase().starts_with("host") {
-                        builder
-                    }
-                    else {
-                        builder.header(key, val)
-                    }
-                }
-                else {
+        let mut builder = self.headers.iter().fold(self.builder(), |builder, header| {
+            if let Some((key, val)) = header.split_once(": ") {
+                if key.to_lowercase().starts_with("host") {
                     builder
+                } else {
+                    builder.header(key, val)
                 }
-            });
-
-        builder =
-            if self.body.is_some() {
-                builder.body(self.body.as_ref().unwrap().clone())
-            }
-            else {
+            } else {
                 builder
-            };
+            }
+        });
+
+        builder = if self.body.is_some() {
+            builder.body(self.body.as_ref().unwrap().clone())
+        } else {
+            builder
+        };
 
         builder.send()
     }
-    
+
     // Private Functions
 
     fn builder(&self) -> RequestBuilder {
@@ -51,7 +46,7 @@ impl Request {
             "DELETE" => client.delete(&url),
             "HEAD" => client.head(&url),
             "PATCH" => client.patch(&url),
-            verb => panic!("{} is not a valid http verb!", verb)
+            verb => panic!("{} is not a valid http verb!", verb),
         }
     }
 }

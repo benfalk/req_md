@@ -1,85 +1,104 @@
-use url::{Url, Position};
 use crate::req::Request;
+use comrak::arena_tree::Node;
+use comrak::nodes::{Ast, NodeValue::*};
+use comrak::{parse_document, Arena, ComrakOptions};
+use std::cell::RefCell;
+use url::{Position, Url};
 
-const VALID_METHODS: &'static [&'static str] = &[
-    "GET",
-    "HEAD",
-    "POST",
-    "PUT",
-    "DELETE",
-    "PATCH",
-];
+type MarkDown<'a> = Node<'a, RefCell<Ast>>;
+
+const VALID_METHODS: &'static [&'static str] = &["GET", "HEAD", "POST", "PUT", "DELETE", "PATCH"];
 
 pub fn parse_request(input: &str) -> Option<Request> {
-    let mut lines = input.split("\n");
-    let (method, uri) = find_req_line(&mut lines)?;
-    let headers = collect_headers(&mut lines);
-    let host = host_from_uri_or_headers(&uri, &headers)?;
-    let body = slurp_up_body(&mut lines);
+    let arena = Arena::new();
+
+    let node = parse_document(&arena, &input, &ComrakOptions::default())
+        .children()
+        .find(|node| node.is_req_block())?;
 
     Some(Request {
-        method,
-        uri,
-        headers,
-        body,
-        host,
+        method: node.request_method()?,
+        uri: node.request_uri()?,
+        host: node.host()?,
+        headers: node.headers(),
+        body: node.request_body(),
     })
 }
 
-fn find_req_line(lines: &mut std::str::Split<&str>) -> Option<(String, String)> {
-    while let Some(line) = lines.next() {
-        for method in VALID_METHODS {
-            if line.starts_with(method) {
-                if let Some((method, rest)) = line.split_once(" ") {
-                    return Some((method.to_string(), rest.to_string()));
-                }
-            }
+trait ReqBlock {
+    fn request_method(&self) -> Option<String> {
+        let req_line = self.request_line()?;
+
+        VALID_METHODS
+            .iter()
+            .find(|method| req_line.starts_with(*method))
+            .map(|method| method.to_string())
+    }
+
+    fn request_uri(&self) -> Option<String> {
+        self.request_line()?
+            .split_whitespace()
+            .nth(1)
+            .map(|uri| uri.to_string())
+    }
+
+    fn host(&self) -> Option<String> {
+        let uri = self.request_uri()?;
+        if let Ok(url) = Url::parse(&uri) {
+            return Some(url[..Position::BeforePath].to_string());
         }
+
+        self.headers()
+            .iter()
+            .find(|header| header.to_lowercase().starts_with("host: "))
+            .map(|header| header[6..].to_string())
     }
 
-    None
+    fn is_req_block(&self) -> bool;
+    fn request_line(&self) -> Option<String>;
+    fn headers(&self) -> Vec<String>;
+    fn request_body(&self) -> Option<String>;
 }
 
-fn collect_headers(lines: &mut std::str::Split<&str>) -> Vec<String> {
-    let mut headers = vec![];
-    while let Some(line) = lines.next() {
-        if line.starts_with("```") || line.len() == 0 { break; }
-        headers.push(line.to_string());
-    }
-    headers
-}
+impl<'a> ReqBlock for &'a MarkDown<'a> {
+    fn is_req_block(&self) -> bool {
+        if let CodeBlock(code) = &self.data.borrow().value {
+            let string = String::from_utf8_lossy(&code.literal);
+            return VALID_METHODS
+                .iter()
+                .any(|method| string.starts_with(method));
+        }
 
-fn slurp_up_body(lines: &mut std::str::Split<&str>) -> Option<String> {
-    let mut body = String::new();
-    let first_line = lines.next()?;
-
-    if !first_line.starts_with("```") {
-        body.push_str(&first_line);
+        false
     }
 
-    while let Some(line) = lines.next() {
-        if line.starts_with("```") { break; }
-        body.push_str(&line);
-    }
+    fn request_line(&self) -> Option<String> {
+        if let CodeBlock(code) = &self.data.borrow().value {
+            let block = String::from_utf8_lossy(&code.literal);
+            return block.lines().nth(0).map(|s| s.to_string());
+        }
 
-    if body.len() > 0 {
-        Some(body)
-    }
-    else {
         None
     }
-}
 
-fn host_from_uri_or_headers(uri: &String, headers: &Vec<String>) -> Option<String> {
-    if let Ok(url) = Url::parse(&uri) {
-        return Some(url[..Position::BeforePath].to_string());
+    fn headers(&self) -> Vec<String> {
+        if let CodeBlock(code) = &self.data.borrow().value {
+            let block = String::from_utf8_lossy(&code.literal);
+            return block
+                .lines()
+                .skip(1)
+                .take_while(|line| line.trim().len() > 0)
+                .map(|line| line.to_string())
+                .collect();
+        }
+
+        vec![]
     }
 
-    for header in headers {
-        if header.to_lowercase().starts_with("host: ") {
-            return Some(header[6..].to_string());
+    fn request_body(&self) -> Option<String> {
+        match &self.next_sibling()?.data.borrow().value {
+            CodeBlock(code) => Some(String::from_utf8_lossy(&code.literal).to_string()),
+            _ => None,
         }
     }
-
-    None
 }
