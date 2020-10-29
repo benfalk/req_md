@@ -3,6 +3,7 @@ use comrak::arena_tree::Node;
 use comrak::nodes::{Ast, NodeValue::*};
 use comrak::{parse_document, Arena, ComrakOptions};
 use std::cell::RefCell;
+use std::ops::Range;
 use url::{Position, Url};
 
 type MarkDown<'a> = Node<'a, RefCell<Ast>>;
@@ -58,6 +59,15 @@ trait ReqBlock {
     fn request_line(&self) -> Option<String>;
     fn headers(&self) -> Vec<String>;
     fn request_body(&self) -> Option<String>;
+    fn line_range(&self) -> Option<Range<u32>>;
+}
+
+trait SourceRange {
+    fn source_range(&self) -> Option<Range<u32>>;
+}
+
+trait NodeInterrogation {
+    fn is_a_code_block(&self) -> bool;
 }
 
 impl<'a> ReqBlock for &'a MarkDown<'a> {
@@ -99,6 +109,45 @@ impl<'a> ReqBlock for &'a MarkDown<'a> {
         match &self.next_sibling()?.data.borrow().value {
             CodeBlock(code) => Some(String::from_utf8_lossy(&code.literal).to_string()),
             _ => None,
+        }
+    }
+
+    fn line_range(&self) -> Option<Range<u32>> {
+        let range = self.source_range()?;
+
+        match self.next_sibling() {
+            None => Some(range),
+            Some(node) => {
+                if node.is_a_code_block() {
+                    Some(range.start..(node.source_range()?.end))
+                } else {
+                    Some(range)
+                }
+            }
+        }
+    }
+}
+
+impl<'a> SourceRange for &'a MarkDown<'a> {
+    fn source_range(&self) -> Option<Range<u32>> {
+        let start = self.data.borrow().start_line;
+
+        let lines =
+            match &self.data.borrow().value {
+                CodeBlock(code) =>
+                    String::from_utf8_lossy(&code.literal).lines().count() as u32 + 1,
+                _ => return None,
+            };
+
+        Some(start..(start+lines+1))
+    }
+}
+
+impl<'a> NodeInterrogation for &'a MarkDown<'a> {
+    fn is_a_code_block(&self) -> bool {
+        match self.data.borrow().value {
+            CodeBlock(_) => true,
+            _ => false,
         }
     }
 }

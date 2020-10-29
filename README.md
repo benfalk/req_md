@@ -20,5 +20,5 @@ Host: localhost:3000
 ```
 
 As of right now this is pretty primitive; but as I get
-time I'll add features to it.  Currently it only process
-what is piped to it's stdin.
+time I'll add features to it.  Currently it will only
+process what is piped to it's stdin.
