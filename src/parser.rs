@@ -1,4 +1,4 @@
-use crate::req::Request;
+use crate::req::{Request, Meta};
 use comrak::arena_tree::Node;
 use comrak::nodes::{Ast, NodeValue::*};
 use comrak::{parse_document, Arena, ComrakOptions};
@@ -17,12 +17,17 @@ pub fn parse_request(input: &str) -> Option<Request> {
         .children()
         .find(|node| node.is_req_block())?;
 
+    let meta = Meta {
+        line_range: node.line_range()
+    };
+
     Some(Request {
         method: node.request_method()?,
         uri: node.request_uri()?,
         host: node.host()?,
         headers: node.headers(),
         body: node.request_body(),
+        meta: Some(meta),
     })
 }
 

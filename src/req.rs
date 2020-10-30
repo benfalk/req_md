@@ -1,6 +1,8 @@
 use reqwest::blocking::{Client, RequestBuilder, Response};
 use reqwest::Error;
+
 mod meta;
+pub use self::meta::Meta;
 
 #[derive(Debug)]
 pub struct Request {
@@ -9,6 +11,7 @@ pub struct Request {
     pub host: String,
     pub headers: Vec<String>,
     pub body: Option<String>,
+    pub meta: Option<Meta>,
 }
 
 impl Request {
