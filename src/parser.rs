@@ -10,28 +10,33 @@ type MarkDown<'a> = Node<'a, RefCell<Ast>>;
 
 const VALID_METHODS: &'static [&'static str] = &["GET", "HEAD", "POST", "PUT", "DELETE", "PATCH"];
 
-pub fn parse_request(input: &str) -> Option<Request> {
+pub fn parse_requests(input: &str) -> Vec<Request> {
     let arena = Arena::new();
 
-    let node = parse_document(&arena, &input, &ComrakOptions::default())
-        .children()
-        .find(|node| node.is_req_block())?;
-
-    let meta = Meta {
-        line_range: node.line_range()
-    };
-
-    Some(Request {
-        method: node.request_method()?,
-        uri: node.request_uri()?,
-        host: node.host()?,
-        headers: node.headers(),
-        body: node.request_body(),
-        meta: Some(meta),
-    })
+    parse_document(&arena, &input, &ComrakOptions::default())
+    .children()
+    .filter(|node| node.is_req_block())
+    .map(|node| node.to_request())
+    .flatten()
+    .collect()
 }
 
 trait ReqBlock {
+    fn to_request(&self) -> Option<Request> {
+        let meta = Meta {
+            line_range: self.line_range().unwrap_or(0..0)
+        };
+
+        Some(Request {
+            method: self.request_method()?,
+            uri: self.request_uri()?,
+            host: self.host()?,
+            headers: self.headers(),
+            body: self.request_body(),
+            meta
+        })
+    }
+
     fn request_method(&self) -> Option<String> {
         let req_line = self.request_line()?;
 

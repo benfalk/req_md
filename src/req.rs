@@ -11,7 +11,7 @@ pub struct Request {
     pub host: String,
     pub headers: Vec<String>,
     pub body: Option<String>,
-    pub meta: Option<Meta>,
+    pub meta: Meta,
 }
 
 impl Request {
