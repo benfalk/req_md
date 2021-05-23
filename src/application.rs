@@ -8,7 +8,7 @@ pub enum OutputFormat {
 }
 
 #[derive(Clap)]
-#[clap(version = "0.1.0", author = "Ben Falk <ben.falk@yahoo.com>")]
+#[clap(version = "0.1.0", author = "Ben Falk <benjamin.falk@yahoo.com>")]
 pub struct Opts {
     /// file to use for a request
     file: Option<String>,
@@ -16,6 +16,10 @@ pub struct Opts {
     /// list all requests parsed from input w/o running them
     #[clap(long)]
     pub list_requests: bool,
+
+    /// At what line number do you want to run a request
+    #[clap(long)]
+    pub line: Option<u32>,
 
     /// options are 'raw' and 'markdown'
     #[clap(long, default_value = "raw")]
@@ -43,6 +47,10 @@ impl Opts {
     }
 
     pub fn at_line(&self) -> Option<u32> {
+        if self.line.is_some() {
+            return self.line;
+        }
+
         self.file
             .as_ref()
             .take()?
