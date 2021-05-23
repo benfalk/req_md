@@ -11,7 +11,8 @@ exterior_color
 : red
 
 ```
-GET /
+GET /?foo=bar
+     &rofl=copter
 Host: https://www.google.com
 Content-Type: application/json
 ```

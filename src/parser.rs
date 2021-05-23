@@ -24,7 +24,10 @@ pub fn parse_requests(input: &str) -> Vec<Request> {
 trait ReqBlock {
     fn to_request(&self) -> Option<Request> {
         let meta = Meta {
-            line_range: self.line_range().unwrap_or(0..0)
+            line_range: self.line_range().unwrap_or(0..0),
+            // TODO: Come up with a way to set timeout in
+            // the markdown dock
+            timeout: None
         };
 
         Some(Request {
@@ -33,7 +36,7 @@ trait ReqBlock {
             host: self.host()?,
             headers: self.headers(),
             body: self.request_body(),
-            meta
+            meta,
         })
     }
 
@@ -95,7 +98,17 @@ impl<'a> ReqBlock for &'a MarkDown<'a> {
     fn request_line(&self) -> Option<String> {
         if let CodeBlock(code) = &self.data.borrow().value {
             let block = String::from_utf8_lossy(&code.literal);
-            return block.lines().nth(0).map(|s| s.to_string());
+            let lines = lines_for_req_line(&block);
+            let mut req_line = String::new();
+
+            block
+                .lines()
+                .take(lines)
+                .for_each(|line| {
+                    req_line += line.trim();
+                });
+
+            return Some(req_line);
         }
 
         None
@@ -104,9 +117,11 @@ impl<'a> ReqBlock for &'a MarkDown<'a> {
     fn headers(&self) -> Vec<String> {
         if let CodeBlock(code) = &self.data.borrow().value {
             let block = String::from_utf8_lossy(&code.literal);
+            let lines = lines_for_req_line(&block);
+
             return block
                 .lines()
-                .skip(1)
+                .skip(lines)
                 .take_while(|line| line.trim().len() > 0)
                 .map(|line| line.to_string())
                 .collect();
@@ -136,6 +151,17 @@ impl<'a> ReqBlock for &'a MarkDown<'a> {
             }
         }
     }
+}
+
+fn lines_for_req_line(body: &str) -> usize {
+    body
+        .lines()
+        .skip(1)
+        .take_while(|line| {
+            let trimed = line.trim();
+            trimed.starts_with("?") || trimed.starts_with("&")
+        })
+        .count() + 1
 }
 
 impl<'a> SourceRange for &'a MarkDown<'a> {

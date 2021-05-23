@@ -1,4 +1,3 @@
-#![feature(str_split_once)]
 mod application;
 mod parser;
 mod req;
@@ -16,9 +15,22 @@ fn main() {
 fn list_requests(opts: &application::Opts) {
     let data = opts.input().unwrap();
     let reqs = parser::parse_requests(&data);
+    let line = opts.at_line();
 
-    for req in reqs {
-        println!("{:#?}", req);
+    match line {
+        None => {
+            for req in &reqs {
+                println!("{:#?}", req);
+            }
+        },
+        Some(line_number) => {
+            for req in &reqs {
+                if req.meta.line_range.contains(&line_number) {
+                    println!("{:#?}", req);
+                    return;
+                }
+            }
+        }
     }
 }
 
