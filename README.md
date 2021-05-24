@@ -68,9 +68,18 @@ it finds.
 `req_md` knows where to send it's request.  Without it the markdown currently
 is not counted as valid markdown.
 
+You can set a timeout in milliseconds, seconds, or minutes in the format
+following the examples below:
+
+```
+--timeout=300ms
+--timeout=15sec
+--timeout=2min
+```
+
 ## RoadMap
 
- - [ ] Custom Timeouts
+ - [x] Custom Timeouts
  - [ ] Custom Pretty Output Formatters
  - [ ] dotfile Config
  - [ ] Variables Support

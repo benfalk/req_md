@@ -1,10 +1,17 @@
 use clap::Clap;
 use std::fs::File;
 use std::io::{self, Read};
+use std::time::Duration;
+use crate::req::Request;
 
 pub enum OutputFormat {
     Raw,
     MarkDown
+}
+
+#[derive(Debug, Clone)]
+pub struct TimeoutDuration {
+    pub duration: Duration,
 }
 
 #[derive(Clap)]
@@ -24,6 +31,10 @@ pub struct Opts {
     /// options are 'raw' and 'markdown'
     #[clap(long, default_value = "raw")]
     pub output: OutputFormat,
+
+    /// optional, examples 15sec 300ms 2min
+    #[clap(long)]
+    pub timeout: Option<TimeoutDuration>,
 }
 
 pub fn get_opts() -> Opts {
@@ -43,6 +54,12 @@ impl Opts {
             Some(data)
         } else {
             None
+        }
+    }
+
+    pub fn apply_overrieds(&self, request: &mut Request) {
+        if self.timeout.is_some() {
+            request.meta.timeout = self.timeout.clone();
         }
     }
 
@@ -70,6 +87,29 @@ impl FromStr for OutputFormat {
             "raw" => Ok(OutputFormat::Raw),
             "markdown" => Ok(OutputFormat::MarkDown),
             _ => Err("not a valid output format"),
+        }
+    }
+}
+
+impl FromStr for TimeoutDuration {
+    type Err = &'static str;
+    fn from_str(string: &str) -> Result<Self, Self::Err> {
+        let amount:u64 = string
+            .trim_end_matches(char::is_alphabetic)
+            .parse()
+            .map_err(|_| "no valid number found")?;
+
+        if string.ends_with("sec") {
+            Ok(Self { duration: Duration::from_secs(amount) })
+        }
+        else if string.ends_with("ms") {
+            Ok(Self { duration: Duration::from_millis(amount) } )
+        }
+        else if string.ends_with("min") {
+            Ok(Self { duration: Duration::from_secs(amount * 60) } )
+        }
+        else {
+            Err("Not a valid duration")
         }
     }
 }

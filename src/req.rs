@@ -1,5 +1,6 @@
 use reqwest::blocking::{Client, RequestBuilder, Response};
 use reqwest::Error;
+use crate::application::TimeoutDuration;
 
 mod meta;
 pub use self::meta::Meta;
@@ -27,6 +28,14 @@ impl Request {
                 builder
             }
         });
+
+        // TODO: There has to be a more elegant way to do this
+        builder =
+            if let Some(TimeoutDuration { duration } ) = self.meta.timeout {
+                builder.timeout(duration)
+            } else {
+                builder
+            };
 
         builder = if self.body.is_some() {
             builder.body(self.body.as_ref().unwrap().clone())
