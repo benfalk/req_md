@@ -88,6 +88,31 @@ following the examples below:
 --timeout=2min
 ```
 
+## Ghetto NeoVim Plugin
+
+This is how I use it with Neovim; I may one day actually spend some time
+making it "real" plugin.  Note that mine is expecting the output to always
+be JSON and I use `jq` with it.  Also, `req_md` needs to be in your path
+with this example.
+
+```vim
+function! ReqMd()
+  let l:filename = expand('%')
+  let l:line_number = line('.')
+  let l:arg = l:filename . ":" . l:line_number
+  let l:output = system('req_md ' . l:arg . ' | jq .')
+  vnew
+  call append(0, l:output)
+  execute '%s/\%x00/\r/g'
+  normal gg
+  set filetype=json
+  set buftype=nofile
+  set noswapfile
+endfunction
+
+map <leader>rr :call ReqMd()<cr>
+```
+
 ## RoadMap
 
  - [x] Custom Timeouts
