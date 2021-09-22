@@ -1,6 +1,7 @@
 mod application;
 mod parser;
 mod req;
+mod variables;
 
 fn main() {
     let opts = application::get_opts();
@@ -14,7 +15,8 @@ fn main() {
 
 fn list_requests(opts: &application::Opts) {
     let data = opts.input().unwrap();
-    let mut reqs = parser::parse_requests(&data);
+    let vars = variables::Variables::new(&data);
+    let mut reqs = parser::parse_requests(&vars.expand(&data));
 
     match opts.at_line() {
         None => {
@@ -37,7 +39,8 @@ fn list_requests(opts: &application::Opts) {
 
 fn run_request(opts: &application::Opts) {
     let data = opts.input().unwrap();
-    let mut reqs = parser::parse_requests(&data);
+    let vars = variables::Variables::new(&data);
+    let mut reqs = parser::parse_requests(&vars.expand(&data));
     let line = opts.at_line().unwrap_or(1);
 
 

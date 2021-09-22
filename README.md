@@ -42,6 +42,17 @@ R-You-Using-This: again, it can be anything here
 Host: localhost:8081
 ```
 
+### Add in Variables
+
+Any normal line that starts with `VAR:` converts the remaining of the line
+into a variable.  Any references to these made as `$VAR` in your request are
+expanded to the value on the right hand side value of the colon.  This is a
+new and experimental feature that I'm sure has bugs...
+
+For reference see `samples/requests-with-variables.md`
+
+(c) Works on my machine
+
 ## Usage
 
 `req_md` works by either a given filename or a piped in string of markdown.
@@ -82,6 +93,7 @@ following the examples below:
  - [x] Custom Timeouts
  - [ ] Custom Pretty Output Formatters
  - [ ] dotfile Config
- - [ ] Variables Support
+ - [x] Variables Support
+     - [ ] Harden Variables Support
  - [ ] Session / Cookie
  - [ ] Multiple Requests
