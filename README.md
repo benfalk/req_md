@@ -1,5 +1,7 @@
 # Request MD
 
+<img src="./samples/req-md-demo.gif" />
+
 Converts a request formatted with a markdown format into a http request.
 
 For instance the following are valid req_md markdown requests:
