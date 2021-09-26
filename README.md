@@ -51,6 +51,10 @@ into a variable.  Any references to these made as `$VAR` in your request are
 expanded to the value on the right hand side value of the colon.  This is a
 new and experimental feature that I'm sure has bugs...
 
+It also will attempt to use environment variables as well as any `.env` file
+it finds in the current working directory or any subsequent parent directory
+of the current working directory.
+
 For reference see `samples/requests-with-variables.md`
 
 (c) Works on my machine
@@ -122,5 +126,6 @@ map <leader>rr :call ReqMd()<cr>
  - [ ] dotfile Config
  - [x] Variables Support
      - [ ] Harden Variables Support
+     - [x] Dotenv and ENV Variable Support
  - [ ] Session / Cookie
  - [ ] Multiple Requests

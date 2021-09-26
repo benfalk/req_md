@@ -3,7 +3,11 @@ mod parser;
 mod req;
 mod variables;
 
+use dotenv::dotenv;
+
 fn main() {
+    dotenv().ok();
+
     let opts = application::get_opts();
 
     if opts.list_requests {

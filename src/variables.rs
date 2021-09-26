@@ -1,15 +1,23 @@
 use std::collections::HashMap;
+use std::env;
 use regex::Regex;
 
 #[derive(Debug)]
 pub struct Variables {
     vars: HashMap<String, String>,
+    envs: HashMap<String, String>,
 }
 
 impl Variables {
     pub fn new(input: &str) -> Self {
         let mut vars = HashMap::new();
-        let matcher = Regex::new(r"^([^:]+):(.+)$").unwrap();
+        let mut envs = HashMap::new();
+
+        for (key, val) in env::vars() {
+            envs.insert(key, val);
+        }
+
+        let matcher = Regex::new(r"^([^:\s]+):(.+)$").unwrap();
         for line in input.lines() {
             if let Some(cap) = matcher.captures(line) {
                 vars.insert(
@@ -21,6 +29,7 @@ impl Variables {
 
         Self {
             vars,
+            envs,
         }
     }
 
@@ -28,6 +37,10 @@ impl Variables {
         let mut string = input.to_owned();
 
         for (var, val) in &self.vars {
+            string = string.replace(var, val);
+        }
+
+        for (var, val) in &self.envs {
             string = string.replace(var, val);
         }
 
