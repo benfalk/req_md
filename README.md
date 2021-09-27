@@ -106,12 +106,13 @@ function! ReqMd()
   let l:filename = expand('%')
   let l:line_number = line('.')
   let l:arg = l:filename . ":" . l:line_number
-  let l:output = system('req_md ' . l:arg . ' | jq .')
+  let l:output = system('req_md --output=markdown ' . l:arg)
   vnew
   call append(0, l:output)
   execute '%s/\%x00/\r/g'
+  execute 'g/^$/d'
   normal gg
-  set filetype=json
+  set filetype=markdown
   set buftype=nofile
   set noswapfile
 endfunction
@@ -122,7 +123,9 @@ map <leader>rr :call ReqMd()<cr>
 ## RoadMap
 
  - [x] Custom Timeouts
- - [ ] Custom Pretty Output Formatters
+ - [x] Custom Pretty Output Formatters
+     - [x] Markdown with JSON
+     - [ ] Markdown with (xyz format)
  - [ ] dotfile Config
  - [x] Variables Support
      - [ ] Harden Variables Support

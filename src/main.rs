@@ -2,7 +2,10 @@ mod application;
 mod parser;
 mod req;
 mod variables;
+mod pretty_output;
 
+use application::OutputFormat::{Raw, MarkDown};
+use pretty_output::PrettyOutput;
 use dotenv::dotenv;
 
 fn main() {
@@ -52,7 +55,12 @@ fn run_request(opts: &application::Opts) {
         if req.meta.line_range.contains(&line) {
             opts.apply_overrieds(req);
             match req.send() {
-                Ok(resp) => println!("{}", resp.text().unwrap()),
+                Ok(resp) => {
+                    match opts.output {
+                        Raw => println!("{}", resp.text().unwrap()),
+                        MarkDown => println!("{}", PrettyOutput::pretty_output(resp)),
+                    }
+                },
                 Err(err) => eprintln!("{}", err),
             }
             return;
@@ -61,7 +69,12 @@ fn run_request(opts: &application::Opts) {
 
     if let Some(req) = reqs.iter().nth(0) {
         match req.send() {
-            Ok(resp) => println!("{}", resp.text().unwrap()),
+            Ok(resp) => {
+                match opts.output {
+                    Raw => println!("{}", resp.text().unwrap()),
+                    MarkDown => println!("{}", PrettyOutput::pretty_output(resp)),
+                }
+            },
             Err(err) => eprintln!("{}", err),
         }
     }
