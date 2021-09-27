@@ -14,7 +14,10 @@ impl Variables {
         let mut envs = HashMap::new();
 
         for (key, val) in env::vars() {
-            envs.insert(key, val);
+            envs.insert(
+                ["$", key.trim()].concat().to_string(),
+                val
+            );
         }
 
         let matcher = Regex::new(r"^([^:\s]+):(.+)$").unwrap();
