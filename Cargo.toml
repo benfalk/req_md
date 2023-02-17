@@ -1,6 +1,6 @@
 [package]
 name = "req_md"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Benjamin Falk <bfalk@truecar.com>"]
 edition = "2018"
 
@@ -11,7 +11,7 @@ url = "2.1"
 regex = "1"
 reqwest = { version = "0.11", features = ["blocking"] }
 comrak = "0.10"
-clap = "3.0.0-beta.2"
+clap = { version = "4.1.0", features = ["derive"] }
 atty = "0.2"
 dotenv = "0.15.0"
 json = "*"

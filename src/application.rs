@@ -1,9 +1,10 @@
-use clap::Clap;
+use clap::Parser;
 use std::fs::File;
 use std::io::{self, Read};
 use std::time::Duration;
 use crate::req::Request;
 
+#[derive(Clone, Copy)]
 pub enum OutputFormat {
     Raw,
     MarkDown
@@ -14,8 +15,8 @@ pub struct TimeoutDuration {
     pub duration: Duration,
 }
 
-#[derive(Clap)]
-#[clap(version = "0.1.0", author = "Ben Falk <benjamin.falk@yahoo.com>")]
+#[derive(Parser)]
+#[command(version, author = "Ben Falk <benjamin.falk@yahoo.com>")]
 pub struct Opts {
     /// file to use for a request
     file: Option<String>,
