@@ -1,12 +1,12 @@
 mod application;
 mod parser;
+mod pretty_output;
 mod req;
 mod variables;
-mod pretty_output;
 
-use application::OutputFormat::{Raw, MarkDown};
-use pretty_output::PrettyOutput;
+use application::OutputFormat::{MarkDown, Raw};
 use dotenv::dotenv;
+use pretty_output::PrettyOutput;
 
 fn main() {
     dotenv().ok();
@@ -31,7 +31,7 @@ fn list_requests(opts: &application::Opts) {
                 opts.apply_overrieds(req);
                 println!("{:#?}", req);
             }
-        },
+        }
         Some(line_number) => {
             for req in &mut reqs {
                 if req.meta.line_range.contains(&line_number) {
@@ -50,16 +50,13 @@ fn run_request(opts: &application::Opts) {
     let mut reqs = parser::parse_requests(&vars.expand(&data));
     let line = opts.at_line().unwrap_or(1);
 
-
     for req in &mut reqs {
         if req.meta.line_range.contains(&line) {
             opts.apply_overrieds(req);
             match req.send() {
-                Ok(resp) => {
-                    match opts.output {
-                        Raw => println!("{}", resp.text().unwrap()),
-                        MarkDown => println!("{}", PrettyOutput::pretty_output(resp)),
-                    }
+                Ok(resp) => match opts.output {
+                    Raw => println!("{}", resp.text().unwrap()),
+                    MarkDown => println!("{}", PrettyOutput::pretty_output(resp)),
                 },
                 Err(err) => eprintln!("{}", err),
             }
@@ -67,13 +64,11 @@ fn run_request(opts: &application::Opts) {
         }
     }
 
-    if let Some(req) = reqs.iter().nth(0) {
+    if let Some(req) = reqs.first() {
         match req.send() {
-            Ok(resp) => {
-                match opts.output {
-                    Raw => println!("{}", resp.text().unwrap()),
-                    MarkDown => println!("{}", PrettyOutput::pretty_output(resp)),
-                }
+            Ok(resp) => match opts.output {
+                Raw => println!("{}", resp.text().unwrap()),
+                MarkDown => println!("{}", PrettyOutput::pretty_output(resp)),
             },
             Err(err) => eprintln!("{}", err),
         }
