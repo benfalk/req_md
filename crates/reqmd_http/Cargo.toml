@@ -1,0 +1,28 @@
+[package]
+name = "reqmd_http"
+version = "0.1.0"
+edition = "2024"
+
+[features]
+default = []
+serde = ["serde/derive", "url/serde"]
+reqwest = ["reqwest/blocking"]
+mock = ["mockall"]
+
+[dependencies]
+url.workspace = true
+thiserror.workspace = true
+serde = { workspace = true, optional = true }
+reqwest = { workspace = true, optional = true }
+mockall = { workspace = true, optional = true }
+
+[dev-dependencies]
+rstest.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+reqwest.workspace = true
+mockall.workspace = true
+
+[[example]]
+name = "http-example"
+path = "examples/http-example.rs"

@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["crates/req_md", "crates/reqmd_core"]
+members = ["crates/req_md", "crates/reqmd_http"]
 
 [workspace.dependencies]
 
@@ -16,6 +16,16 @@ comrak = "0.40"
 #  ## Dependencies to Keep:
 #
 clap = { version = "4.1.0", features = ["derive"] }
-reqwest = { version = "0.12", features = ["blocking"] }
-regex = "1"
-url = "2.1"
+reqwest = { version = "0.12.0", features = ["blocking"] }
+regex = "1.11.0"
+serde = { version = "1.0.0", features = ["derive"] }
+serde_json = "1.0.0"
+url = "2.5.0"
+thiserror = "2.0.0"
+tokio = { version = "1.47.0", features = ["full"] }
+
+#
+# ## Dev Dependencies to Keep:
+#
+rstest = "0.26.0"
+mockall = "0.13.0"
