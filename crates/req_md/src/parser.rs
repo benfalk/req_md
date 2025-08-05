@@ -1,24 +1,23 @@
-use crate::req::{Request, Meta};
+use crate::req::{Meta, Request};
 use comrak::arena_tree::Node;
 use comrak::nodes::{Ast, NodeValue::*};
-use comrak::{parse_document, Arena, ComrakOptions};
+use comrak::{Arena, ComrakOptions, parse_document};
 use std::cell::RefCell;
 use std::ops::Range;
 use url::{Position, Url};
 
 type MarkDown<'a> = Node<'a, RefCell<Ast>>;
 
-const VALID_METHODS: &'static [&'static str] = &["GET", "HEAD", "POST", "PUT", "DELETE", "PATCH"];
+const VALID_METHODS: &[&str] = &["GET", "HEAD", "POST", "PUT", "DELETE", "PATCH"];
 
 pub fn parse_requests(input: &str) -> Vec<Request> {
     let arena = Arena::new();
 
-    parse_document(&arena, &input, &ComrakOptions::default())
-    .children()
-    .filter(|node| node.is_req_block())
-    .map(|node| node.to_request())
-    .flatten()
-    .collect()
+    parse_document(&arena, input, &ComrakOptions::default())
+        .children()
+        .filter(|node| node.is_req_block())
+        .filter_map(|node| node.to_request())
+        .collect()
 }
 
 trait ReqBlock {
@@ -27,7 +26,7 @@ trait ReqBlock {
             line_range: self.line_range().unwrap_or(0..0),
             // TODO: Come up with a way to set timeout in
             // the markdown dock
-            timeout: None
+            timeout: None,
         };
 
         Some(Request {
@@ -86,7 +85,7 @@ trait NodeInterrogation {
 impl<'a> ReqBlock for &'a MarkDown<'a> {
     fn is_req_block(&self) -> bool {
         if let CodeBlock(code) = &self.data.borrow().value {
-            let string = String::from_utf8_lossy(&code.literal);
+            let string = code.literal.as_str();
             return VALID_METHODS
                 .iter()
                 .any(|method| string.starts_with(method));
@@ -97,16 +96,13 @@ impl<'a> ReqBlock for &'a MarkDown<'a> {
 
     fn request_line(&self) -> Option<String> {
         if let CodeBlock(code) = &self.data.borrow().value {
-            let block = String::from_utf8_lossy(&code.literal);
+            let block = code.literal.clone();
             let lines = lines_for_req_line(&block);
             let mut req_line = String::new();
 
-            block
-                .lines()
-                .take(lines)
-                .for_each(|line| {
-                    req_line += line.trim();
-                });
+            block.lines().take(lines).for_each(|line| {
+                req_line += line.trim();
+            });
 
             return Some(req_line);
         }
@@ -116,13 +112,13 @@ impl<'a> ReqBlock for &'a MarkDown<'a> {
 
     fn headers(&self) -> Vec<String> {
         if let CodeBlock(code) = &self.data.borrow().value {
-            let block = String::from_utf8_lossy(&code.literal);
+            let block = code.literal.clone();
             let lines = lines_for_req_line(&block);
 
             return block
                 .lines()
                 .skip(lines)
-                .take_while(|line| line.trim().len() > 0)
+                .take_while(|line| !line.trim().is_empty())
                 .map(|line| line.to_string())
                 .collect();
         }
@@ -132,7 +128,7 @@ impl<'a> ReqBlock for &'a MarkDown<'a> {
 
     fn request_body(&self) -> Option<String> {
         match &self.next_sibling()?.data.borrow().value {
-            CodeBlock(code) => Some(String::from_utf8_lossy(&code.literal).to_string()),
+            CodeBlock(code) => Some(code.literal.clone()),
             _ => None,
         }
     }
@@ -154,36 +150,31 @@ impl<'a> ReqBlock for &'a MarkDown<'a> {
 }
 
 fn lines_for_req_line(body: &str) -> usize {
-    body
-        .lines()
+    body.lines()
         .skip(1)
         .take_while(|line| {
             let trimed = line.trim();
             trimed.starts_with("?") || trimed.starts_with("&")
         })
-        .count() + 1
+        .count()
+        + 1
 }
 
 impl<'a> SourceRange for &'a MarkDown<'a> {
     fn source_range(&self) -> Option<Range<u32>> {
-        let start = self.data.borrow().start_line;
+        let start = self.data.borrow().sourcepos.start.line as u32;
 
-        let lines =
-            match &self.data.borrow().value {
-                CodeBlock(code) =>
-                    String::from_utf8_lossy(&code.literal).lines().count() as u32 + 1,
-                _ => return None,
-            };
+        let lines = match &self.data.borrow().value {
+            CodeBlock(code) => code.literal.lines().count() as u32 + 1,
+            _ => return None,
+        };
 
-        Some(start..(start+lines+1))
+        Some(start..(start + lines + 1))
     }
 }
 
 impl<'a> NodeInterrogation for &'a MarkDown<'a> {
     fn is_a_code_block(&self) -> bool {
-        match self.data.borrow().value {
-            CodeBlock(_) => true,
-            _ => false,
-        }
+        matches!(self.data.borrow().value, CodeBlock(_))
     }
 }

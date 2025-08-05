@@ -1,13 +1,13 @@
+use crate::req::Request;
 use clap::Parser;
 use std::fs::File;
 use std::io::{self, Read};
 use std::time::Duration;
-use crate::req::Request;
 
 #[derive(Clone, Copy)]
 pub enum OutputFormat {
     Raw,
-    MarkDown
+    MarkDown,
 }
 
 #[derive(Debug, Clone)]
@@ -69,13 +69,7 @@ impl Opts {
             return self.line;
         }
 
-        self.file
-            .as_ref()
-            .take()?
-            .split(":")
-            .nth(1)?
-            .parse()
-            .map_or(None, |n| Some(n))
+        self.file.as_ref()?.split(":").nth(1)?.parse().ok()
     }
 }
 
@@ -95,21 +89,24 @@ impl FromStr for OutputFormat {
 impl FromStr for TimeoutDuration {
     type Err = &'static str;
     fn from_str(string: &str) -> Result<Self, Self::Err> {
-        let amount:u64 = string
+        let amount: u64 = string
             .trim_end_matches(char::is_alphabetic)
             .parse()
             .map_err(|_| "no valid number found")?;
 
         if string.ends_with("sec") {
-            Ok(Self { duration: Duration::from_secs(amount) })
-        }
-        else if string.ends_with("ms") {
-            Ok(Self { duration: Duration::from_millis(amount) } )
-        }
-        else if string.ends_with("min") {
-            Ok(Self { duration: Duration::from_secs(amount * 60) } )
-        }
-        else {
+            Ok(Self {
+                duration: Duration::from_secs(amount),
+            })
+        } else if string.ends_with("ms") {
+            Ok(Self {
+                duration: Duration::from_millis(amount),
+            })
+        } else if string.ends_with("min") {
+            Ok(Self {
+                duration: Duration::from_secs(amount * 60),
+            })
+        } else {
             Err("Not a valid duration")
         }
     }
