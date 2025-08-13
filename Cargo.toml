@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["crates/req_md", "crates/reqmd_http"]
+members = ["crates/req_md", "crates/reqmd_core", "crates/reqmd_http"]
 
 [workspace.dependencies]
 

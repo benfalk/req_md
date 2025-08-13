@@ -33,6 +33,7 @@
 /// assert_eq!(headers.first_value_for("x-custom-header"), Some("value1"));
 /// assert_eq!(headers.first_value_for("x-another-header"), Some("value2"));
 /// ```
+/// ---
 #[derive(Debug, Clone, PartialEq, Default, Eq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(feature = "serde", serde(transparent))]

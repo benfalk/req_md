@@ -1333,6 +1333,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "reqmd_core"
+version = "0.1.0"
+dependencies = [
+ "reqmd_http",
+ "rstest",
+ "serde",
+ "thiserror 2.0.12",
+ "url",
+]
+
+[[package]]
 name = "reqmd_http"
 version = "0.1.0"
 dependencies = [

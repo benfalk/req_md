@@ -1,0 +1,17 @@
+[package]
+name = "reqmd_core"
+version = "0.1.0"
+edition = "2024"
+
+[features]
+default = []
+serde = ["serde/derive", "reqmd_http/serde", "url/serde"]
+
+[dependencies]
+thiserror.workspace = true
+url.workspace = true
+serde = { workspace = true, optional = true }
+reqmd_http = { path = "../reqmd_http" }
+
+[dev-dependencies]
+rstest.workspace = true
