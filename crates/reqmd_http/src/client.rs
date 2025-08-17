@@ -25,7 +25,7 @@ mod reqwest_impl {
                     Method::Trace => ::reqwest::Method::TRACE,
                     Method::Connect => ::reqwest::Method::CONNECT,
                 },
-                request.url.clone(),
+                request.build_url(),
             );
 
             for header in &request.headers {
@@ -86,14 +86,18 @@ mod reqwest_impl {
 mod tests {
     use super::*;
     use crate::header::Headers;
+    use crate::request::Method;
     use crate::response::Status;
 
     fn create_blog() -> Request {
-        Request::post("https://example.com/blog")
-            .unwrap()
-            .header("Content-Type", "application/json")
-            .text_body(r#"{"title": "Hello", "content": "World!"}"#)
-            .build()
+        Request::builder(|builder| {
+            builder
+                .method(Method::Post)
+                .address(|addr| {
+                    addr.scheme(crate::address::Scheme::Https).port(443);
+                })
+                .header("Content-Type", "application/json")
+        })
     }
 
     #[tokio::test]

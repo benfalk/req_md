@@ -10,6 +10,7 @@ reqwest = ["reqwest/blocking"]
 mock = ["mockall"]
 
 [dependencies]
+readonly.workspace = true
 url.workspace = true
 thiserror.workspace = true
 serde = { workspace = true, optional = true }

@@ -2,15 +2,27 @@
 // cargo run --example serde-example --features "serde,reqwest"
 //
 
-use ::reqmd_http::{error::Error, request::Request};
+use ::reqmd_http::address::{Host, Scheme};
+use ::reqmd_http::{
+    error::Error,
+    request::{Method, Request},
+};
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
+    let host = Host::parse("echo.free.beeceptor.com").expect("valid host");
+
     // Create a new request
-    let request = Request::post("https://echo.free.beeceptor.com/widget")?
-        .header("Content-Type", "application/json")
-        .text_body(r#"{"name":"foo"}"#)
-        .build();
+    let request = Request::builder(|builder| {
+        builder
+            .method(Method::Post)
+            .address(|addr| {
+                addr.scheme(Scheme::Https).host(host);
+            })
+            .path("/widget")
+            .header("Content-Type", "application/json")
+            .body_text(r#"{"name":"foo"}"#)
+    });
 
     // What does it look like in JSON?
     #[cfg(feature = "serde")]
