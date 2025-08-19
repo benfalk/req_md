@@ -21,3 +21,32 @@ pub enum Body {
     /// Body is a UTF-8 encoded text.
     Text(String),
 }
+
+impl Body {
+    /// shorthand to reference body text if it is UTF-8 encoded.
+    pub fn text(&self) -> Option<&str> {
+        match self {
+            Body::Text(text) => Some(text.as_str()),
+            _ => None,
+        }
+    }
+
+    /// shorthand to reference body data as a byte slice.
+    pub fn data(&self) -> &[u8] {
+        match self {
+            Body::None => &[],
+            Body::Binary(data) => data.as_slice(),
+            Body::Text(text) => text.as_bytes(),
+        }
+    }
+
+    /// byte-size of body data.
+    pub fn len(&self) -> usize {
+        self.data().len()
+    }
+
+    /// a body with no data.
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+}

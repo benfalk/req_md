@@ -6,9 +6,9 @@
 ///     ("fizz", "buzz"),
 /// ]);
 ///
-/// assert_eq!(query.first_value_for("foo"), Some("bar"));
-/// assert_eq!(query.first_value_for("fizz"), Some("buzz"));
-/// assert!(query.first_value_for("nonexistent").is_none());
+/// assert_eq!(query.first("foo"), Some("bar"));
+/// assert_eq!(query.first("fizz"), Some("buzz"));
+/// assert!(query.first("nonexistent").is_none());
 /// ```
 /// ---
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
@@ -18,7 +18,7 @@ pub struct QueryString(Vec<QueryParameter>);
 
 impl QueryString {
     /// Returns the first occurrence of a value for a given key, if it exists.
-    pub fn first_value_for(&self, key: &str) -> Option<&str> {
+    pub fn first(&self, key: &str) -> Option<&str> {
         self.values_for(key).next()
     }
 

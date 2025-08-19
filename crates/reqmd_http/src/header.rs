@@ -8,7 +8,7 @@
 /// headers.add("Authorization", "Bearer token");
 ///
 /// assert_eq!(headers.len(), 2);
-/// assert_eq!(headers.first_value_for("Content-Type"), Some("text/plain"));
+/// assert_eq!(headers.first("Content-Type"), Some("text/plain"));
 ///
 /// // Supports iterating over headers for updates
 /// for header in headers.iter_mut() {
@@ -18,7 +18,7 @@
 /// }
 ///
 /// // Key lookup is case-insensitive
-/// assert_eq!(headers.first_value_for("authorization"), Some("SECRET"));
+/// assert_eq!(headers.first("authorization"), Some("SECRET"));
 ///
 /// // Accessing headers by index
 /// assert_eq!(headers[0].key, "Content-Type");
@@ -30,8 +30,8 @@
 ///     ("X-Another-Header", "value2")
 /// ]);
 ///
-/// assert_eq!(headers.first_value_for("x-custom-header"), Some("value1"));
-/// assert_eq!(headers.first_value_for("x-another-header"), Some("value2"));
+/// assert_eq!(headers.first("x-custom-header"), Some("value1"));
+/// assert_eq!(headers.first("x-another-header"), Some("value2"));
 /// ```
 /// ---
 #[derive(Debug, Clone, PartialEq, Default, Eq)]
@@ -54,7 +54,7 @@ impl Headers {
     }
 
     /// Provides the first value for a given key, if it exists.
-    pub fn first_value_for(&self, key: &str) -> Option<&str> {
+    pub fn first(&self, key: &str) -> Option<&str> {
         self.values_for(key).next()
     }
 

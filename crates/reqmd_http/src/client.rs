@@ -85,19 +85,17 @@ mod reqwest_impl {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::address::Scheme;
     use crate::header::Headers;
     use crate::request::Method;
     use crate::response::Status;
 
     fn create_blog() -> Request {
-        Request::builder(|builder| {
-            builder
-                .method(Method::Post)
-                .address(|addr| {
-                    addr.scheme(crate::address::Scheme::Https).port(443);
-                })
-                .header("Content-Type", "application/json")
-        })
+        Request::builder()
+            .method(Method::Post)
+            .address_scheme(Scheme::Https)
+            .header("Content-Type", "application/json")
+            .build()
     }
 
     #[tokio::test]
@@ -117,10 +115,7 @@ mod tests {
 
         let response = mock.send(&create_blog()).await.unwrap();
         assert_eq!(response.status.0, 201);
-        assert_eq!(
-            response.headers.first_value_for("content-type"),
-            Some("text/plain")
-        );
+        assert_eq!(response.headers.first("content-type"), Some("text/plain"));
         assert_eq!(
             response.body,
             crate::response::Body::Text("Created".to_string())

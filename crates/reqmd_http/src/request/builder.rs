@@ -1,28 +1,92 @@
 use super::{Body, Method, Path, Request};
-use crate::address::{Address, Host, Scheme};
-use ::url::Url;
+use crate::address::{Host, Scheme};
+use std::marker::PhantomData;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(feature = "serde", serde(transparent))]
-pub struct RequestBuilder {
+pub struct RequestBuilder<Target = Request>
+where
+    Target: From<Request>,
+{
     request: Request,
+    target: PhantomData<Target>,
 }
 
-impl RequestBuilder {
+impl<Target> RequestBuilder<Target>
+where
+    Target: From<Request>,
+{
     pub(super) fn new(request: Request) -> Self {
-        Self { request }
+        Self {
+            request,
+            target: PhantomData,
+        }
     }
 
-    pub fn address<F>(mut self, builder_fn: F) -> Self
-    where
-        F: FnOnce(&mut AddressFactory<'_>),
-    {
-        let mut factory = AddressFactory {
-            address: &mut self.request.server_address,
-        };
+    pub fn address_port(mut self, port: u16) -> Self {
+        self.request.address.port = Some(port);
+        self
+    }
 
-        builder_fn(&mut factory);
+    pub fn address_host<H>(mut self, host: H) -> Self
+    where
+        H: Into<Host>,
+    {
+        self.request.address.host = host.into();
+        self
+    }
+
+    pub fn address_scheme<S>(mut self, scheme: S) -> Self
+    where
+        S: Into<Scheme>,
+    {
+        self.request.address.scheme = scheme.into();
+        self
+    }
+
+    pub fn post<P>(mut self, path: P) -> Self
+    where
+        P: Into<Path>,
+    {
+        self.request.method = Method::Post;
+        self.request.path = path.into();
+        self
+    }
+
+    pub fn get<P>(mut self, path: P) -> Self
+    where
+        P: Into<Path>,
+    {
+        self.request.method = Method::Get;
+        self.request.path = path.into();
+        self
+    }
+
+    pub fn delete<P>(mut self, path: P) -> Self
+    where
+        P: Into<Path>,
+    {
+        self.request.method = Method::Delete;
+        self.request.path = path.into();
+        self
+    }
+
+    pub fn put<P>(mut self, path: P) -> Self
+    where
+        P: Into<Path>,
+    {
+        self.request.method = Method::Put;
+        self.request.path = path.into();
+        self
+    }
+
+    pub fn patch<P>(mut self, path: P) -> Self
+    where
+        P: Into<Path>,
+    {
+        self.request.method = Method::Patch;
+        self.request.path = path.into();
         self
     }
 
@@ -60,53 +124,8 @@ impl RequestBuilder {
         self.request.body = Body::Text(body.into());
         self
     }
-}
 
-impl From<RequestBuilder> for Request {
-    fn from(builder: RequestBuilder) -> Self {
-        builder.request
-    }
-}
-
-pub struct AddressFactory<'a> {
-    address: &'a mut Address,
-}
-
-impl AddressFactory<'_> {
-    pub fn with_url(&mut self, url: &Url) -> &mut Self {
-        if let Some(host) = url.host() {
-            self.address.host = host.to_owned();
-        }
-
-        if let Some(port) = url.port() {
-            self.address.port = Some(port);
-        }
-
-        if let Some(scheme) = Scheme::parse_str(url.scheme()) {
-            self.address.scheme = scheme;
-        }
-
-        self
-    }
-
-    pub fn host<H>(&mut self, host: H) -> &mut Self
-    where
-        H: Into<Host>,
-    {
-        self.address.host = host.into();
-        self
-    }
-
-    pub fn port(&mut self, port: u16) -> &mut Self {
-        self.address.port = Some(port);
-        self
-    }
-
-    pub fn scheme<S>(&mut self, scheme: S) -> &mut Self
-    where
-        S: Into<Scheme>,
-    {
-        self.address.scheme = scheme.into();
-        self
+    pub fn build(self) -> Target {
+        Target::from(self.request)
     }
 }

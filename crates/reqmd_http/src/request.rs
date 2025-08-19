@@ -12,17 +12,13 @@ use ::url::Url;
 /// # Request
 ///
 /// Encaspsulates the request data for an HTTP request.
-///
-/// ```rust
-/// # use reqmd_http::request::{Body, Method, Request};
-/// ```
 /// ---
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[readonly::make]
 #[non_exhaustive]
 pub struct Request {
-    pub server_address: Address,
+    pub address: Address,
     pub method: Method,
     pub path: Path,
     pub query: QueryString,
@@ -31,12 +27,33 @@ pub struct Request {
 }
 
 impl Request {
-    /// Creates a new request builder.
-    pub fn builder<F>(builder_fn: F) -> Self
-    where
-        F: FnOnce(RequestBuilder) -> RequestBuilder,
-    {
-        builder_fn(RequestBuilder::new(Self::default())).into()
+    /// # Request Builder
+    ///
+    /// Starts a new request builder that can be used to
+    /// create a [Request] instance.
+    ///
+    /// ```rust
+    /// # use reqmd_http::request::{Request, Method, Body};
+    /// let request = Request::builder()
+    ///     .address_port(3000)
+    ///     .method(Method::Post)
+    ///     .path("/api/v1/resource")
+    ///     .header("Content-Type", "application/json")
+    ///     .body_text(r#"{"foo":"bar"}"#)
+    ///     .build();
+    ///
+    /// assert_eq!(request.method, Method::Post);
+    /// assert_eq!(request.path.as_str(), "/api/v1/resource");
+    /// assert_eq!(request.headers.first("Content-Type"), Some("application/json"));
+    /// assert_eq!(request.body.text(), Some(r#"{"foo":"bar"}"#));
+    /// assert_eq!(
+    ///     request.build_url().as_str(),
+    ///     "http://localhost:3000/api/v1/resource"
+    /// );
+    /// ```
+    /// ---
+    pub fn builder() -> RequestBuilder {
+        RequestBuilder::new(Self::default())
     }
 
     /// # Request Factory
@@ -46,32 +63,57 @@ impl Request {
     ///
     /// ```rust
     /// # use reqmd_http::{
-    /// #   request::{Request, RequestFactory, Method},
+    /// #   request::{Request, RequestFactory, Method, Body},
     /// #   address::Scheme};
-    /// let factory: RequestFactory = Request::factory(|builder| {
-    ///     builder.address(|addr| {
-    ///         addr.scheme(Scheme::Https)
-    ///             .port(8080);
-    ///     })
-    ///     .method(Method::Post)
+    /// let factory: RequestFactory = Request::factory()
+    ///     .address_port(8080)
+    ///     .address_scheme(Scheme::Https)
     ///     .header("Content-Type", "application/json")
-    /// });
+    ///     .build();
     ///
+    /// let request = factory
+    ///     .post("/api/v1/resource")
+    ///     .body_text(r#"{"foo":"bar"}"#)
+    ///     .build();
+    ///
+    /// assert_eq!(request.method, Method::Post);
+    /// assert_eq!(request.path.as_str(), "/api/v1/resource");
+    /// assert_eq!(request.body, Body::Text(r#"{"foo":"bar"}"#.into()));
+    /// assert_eq!(request.address.scheme, Scheme::Https);
+    /// assert_eq!(request.address.port, Some(8080));
+    /// assert_eq!(request.headers.first("Content-Type"), Some("application/json"));
+    ///
+    /// // Small and easy to clone around to start a new request
     /// assert_eq!(
     ///     std::mem::size_of::<RequestFactory>(),
     ///     std::mem::size_of::<usize>(),
     /// );
     /// ```
     /// ---
-    pub fn factory<F>(builder_fn: F) -> RequestFactory
-    where
-        F: FnOnce(RequestBuilder) -> RequestBuilder,
-    {
-        RequestFactory::new(Self::builder(builder_fn))
+    pub fn factory() -> RequestBuilder<RequestFactory> {
+        RequestBuilder::new(Request::default())
     }
 
+    /// # Build URL
+    ///
+    /// Constructs a URL from the request's server address,
+    /// path, and query parameters.
+    ///
+    /// ```rust
+    /// # use reqmd_http::request::Request;
+    /// let req = Request::builder()
+    ///     .path("/search")
+    ///     .query_param("q", "rust")
+    ///     .build();
+    ///
+    /// assert_eq!(
+    ///     req.build_url().as_str(),
+    ///     "http://localhost/search?q=rust"
+    /// );
+    /// ```
+    /// ---
     pub fn build_url(&self) -> Url {
-        let mut url = self.server_address.build_url();
+        let mut url = self.address.build_url();
         url.set_path(self.path.as_str());
         if !self.query.is_empty() {
             let mut query_string = url.query_pairs_mut();
