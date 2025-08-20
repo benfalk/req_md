@@ -1,13 +1,41 @@
 use super::Url;
 
+/// # Http Path
+///
+/// Represents the part of a URL that specifies a
+/// resource or endpoint on a server. It comes after
+/// the domain name and port (if specified) in a URL
+/// and is used to identify a specific resource.
+///
+/// ```rust
+/// # use reqmd_http::request::Path;
+/// let mut path = Path::default();
+/// assert_eq!(path.as_str(), "/");
+///
+/// path.append("/api/v1/resource");
+/// assert_eq!(path.as_str(), "/api/v1/resource");
+/// ```
+///
+/// `NOTE:` Does not include data [super::QueryString]
+///
+/// ---
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Path(Url);
 
 impl Path {
+    /// string refrence of path
     pub fn as_str(&self) -> &str {
         self.0.path()
     }
 
+    /// attaches segment(s) string to existing path
+    /// ```rust
+    /// # use reqmd_http::request::Path;
+    /// let mut path = Path::from("/api/v1");
+    /// path.append("resource");
+    /// assert_eq!(path.as_str(), "/api/v1/resource");
+    /// ```
+    /// ---
     pub fn append(&mut self, segment: &str) {
         let mut path = self.0.path().to_string();
         if !path.ends_with('/') {
@@ -24,6 +52,18 @@ impl Path {
         }
 
         self.0.set_path(&path);
+    }
+
+    /// determines if path is the default "/"
+    /// ```rust
+    /// # use reqmd_http::request::Path;
+    /// assert!(Path::default().is_root());
+    /// assert!(Path::from("").is_root());
+    /// assert!(!Path::from("/api").is_root());
+    /// ```
+    /// ---
+    pub fn is_root(&self) -> bool {
+        self.as_str() == "/"
     }
 }
 

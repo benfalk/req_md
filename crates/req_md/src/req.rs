@@ -1,6 +1,6 @@
-use reqwest::blocking::{Client, RequestBuilder, Response};
-use reqwest::Error;
 use crate::application::TimeoutDuration;
+use reqwest::Error;
+use reqwest::blocking::{Client, RequestBuilder, Response};
 
 mod meta;
 pub use self::meta::Meta;
@@ -30,12 +30,11 @@ impl Request {
         });
 
         // TODO: There has to be a more elegant way to do this
-        builder =
-            if let Some(TimeoutDuration { duration } ) = self.meta.timeout {
-                builder.timeout(duration)
-            } else {
-                builder
-            };
+        builder = if let Some(TimeoutDuration { duration }) = self.meta.timeout {
+            builder.timeout(duration)
+        } else {
+            builder
+        };
 
         builder = if self.body.is_some() {
             builder.body(self.body.as_ref().unwrap().clone())
@@ -59,7 +58,7 @@ impl Request {
             "DELETE" => client.delete(&url),
             "HEAD" => client.head(&url),
             "PATCH" => client.patch(&url),
-            verb => panic!("{} is not a valid http verb!", verb),
+            verb => panic!("{verb} is not a valid http verb!"),
         }
     }
 }

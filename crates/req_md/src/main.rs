@@ -29,14 +29,14 @@ fn list_requests(opts: &application::Opts) {
         None => {
             for req in &mut reqs {
                 opts.apply_overrieds(req);
-                println!("{:#?}", req);
+                println!("{req:#?}");
             }
         }
         Some(line_number) => {
             for req in &mut reqs {
                 if req.meta.line_range.contains(&line_number) {
                     opts.apply_overrieds(req);
-                    println!("{:#?}", req);
+                    println!("{req:#?}");
                     return;
                 }
             }
@@ -58,7 +58,7 @@ fn run_request(opts: &application::Opts) {
                     Raw => println!("{}", resp.text().unwrap()),
                     MarkDown => println!("{}", PrettyOutput::pretty_output(resp)),
                 },
-                Err(err) => eprintln!("{}", err),
+                Err(err) => eprintln!("{err}"),
             }
             return;
         }
@@ -70,7 +70,7 @@ fn run_request(opts: &application::Opts) {
                 Raw => println!("{}", resp.text().unwrap()),
                 MarkDown => println!("{}", PrettyOutput::pretty_output(resp)),
             },
-            Err(err) => eprintln!("{}", err),
+            Err(err) => eprintln!("{err}"),
         }
     }
 }

@@ -1,4 +1,5 @@
 /// # Query Parameters
+///
 /// ```rust
 /// # use reqmd_http::request::QueryString;
 /// let query = QueryString::from_iter([

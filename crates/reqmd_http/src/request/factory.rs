@@ -8,7 +8,7 @@ use std::sync::Arc;
 /// Handy when you need to create multiple requests tha all
 /// require the same base configuration.
 ///
-/// For more docs see [crate::request::Request::factory].
+/// For more docs see [Request::factory]
 ///
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct RequestFactory {
@@ -93,18 +93,89 @@ impl RequestFactory {
         self.request(Method::Get, path)
     }
 
+    /// POST path
+    /// ```rust
+    /// # use reqmd_http::request::{Request, Method};
+    /// let factory = Request::factory()
+    ///     .header("Content-Type", "application/json")
+    ///     .build();
+    ///
+    /// let req = factory
+    ///     .post("/widgets")
+    ///     .body_text(r#"{"name":"foo"}"#)
+    ///     .build();
+    ///
+    /// assert_eq!(req.method, Method::Post);
+    /// assert_eq!(req.headers.first("content-type"), Some("application/json"));
+    /// assert_eq!(req.path.as_str(), "/widgets");
+    /// assert_eq!(req.body.text(), Some(r#"{"name":"foo"}"#));
+    /// ```
+    /// ---
     pub fn post(&self, path: &str) -> RequestBuilder {
         self.request(Method::Post, path)
     }
 
+    /// PUT path
+    /// ```rust
+    /// # use reqmd_http::request::{Request, Method};
+    /// let factory = Request::factory()
+    ///     .header("Content-Type", "application/json")
+    ///     .build();
+    ///
+    /// let req = factory
+    ///     .put("/foo")
+    ///     .body_text("fiz-buz")
+    ///     .build();
+    ///
+    /// assert_eq!(req.method, Method::Put);
+    /// assert_eq!(req.headers.first("content-type"), Some("application/json"));
+    /// assert_eq!(req.path.as_str(), "/foo");
+    /// assert_eq!(req.body.text(), Some("fiz-buz"));
+    /// ```
+    /// ---
     pub fn put(&self, path: &str) -> RequestBuilder {
         self.request(Method::Put, path)
     }
 
+    /// DELETE path
+    /// ```rust
+    /// # use reqmd_http::request::{Request, Method};
+    /// let factory = Request::factory()
+    ///     .header("Authorization", "Bearer some-token")
+    ///     .build();
+    ///
+    /// let req = factory
+    ///     .delete("/foo/123")
+    ///     .build();
+    ///
+    /// assert_eq!(req.method, Method::Delete);
+    /// assert_eq!(req.headers.first("authorization"), Some("Bearer some-token"));
+    /// assert_eq!(req.path.as_str(), "/foo/123");
+    /// assert!(req.body.is_empty());
+    /// ```
+    /// ---
     pub fn delete(&self, path: &str) -> RequestBuilder {
         self.request(Method::Delete, path)
     }
 
+    /// PATCH path
+    /// ```rust
+    /// # use reqmd_http::request::{Request, Method};
+    /// let factory = Request::factory()
+    ///     .header("Authorization", "ApiKey $rofl$")
+    ///     .build();
+    ///
+    /// let req = factory
+    ///     .patch("/my/email")
+    ///     .body_text("domain=example.com")
+    ///     .build();
+    ///
+    /// assert_eq!(req.method, Method::Patch);
+    /// assert_eq!(req.headers.first("authorization"), Some("ApiKey $rofl$"));
+    /// assert_eq!(req.path.as_str(), "/my/email");
+    /// assert_eq!(req.body.text(), Some("domain=example.com"));
+    /// ```
+    /// ---
     pub fn patch(&self, path: &str) -> RequestBuilder {
         self.request(Method::Patch, path)
     }
