@@ -1,5 +1,19 @@
 use crate::{error::Error, request::Request, response::Response};
 
+/// # HTTP Client Trait
+///
+/// This crate does not define a specific HTTP client implementation.
+/// Instead, it defines a trait `Client` that can be implemented for
+/// any client that is needed, such as `reqwest`, `hyper`, or others.
+///
+/// Currently, the only implementation provided is for `reqwest`.
+/// You'll need to enable the `reqwest` feature in your `Cargo.toml`
+/// for it.
+///
+/// Also, the `Client` trait is designed to be mockable for testing
+/// purposes.  If you enable the `mock` feature, it will provide a
+/// [mockall] implementation that can be used in tests.
+///
 #[cfg_attr(any(test, feature = "mock"), ::mockall::automock)]
 pub trait Client {
     fn send(&self, request: &Request) -> impl Future<Output = Result<Response, Error>> + Send;
@@ -8,7 +22,7 @@ pub trait Client {
 #[cfg(feature = "reqwest")]
 mod reqwest_impl {
     use super::*;
-    use crate::{header::Headers, request::Method, response::Status};
+    use crate::{header::Headers, request::Method};
     use ::reqwest::Client as ReqwestClient;
 
     impl Client for ReqwestClient {
@@ -33,11 +47,11 @@ mod reqwest_impl {
             }
 
             match &request.body {
-                crate::request::Body::None => {}
-                crate::request::Body::Text(text) => {
+                crate::request::RequestBody::None => {}
+                crate::request::RequestBody::Text(text) => {
                     builder = builder.body(text.clone());
                 }
-                crate::request::Body::Binary(binary) => {
+                crate::request::RequestBody::Binary(binary) => {
                     builder = builder.body(binary.clone());
                 }
             };
@@ -46,8 +60,6 @@ mod reqwest_impl {
                 .send()
                 .await
                 .map_err(|e| Error::ClientError(Box::new(e)))?;
-
-            let status = Status(reqwest_response.status().as_u16());
 
             let headers = reqwest_response.headers().iter().try_fold(
                 Headers::default(),
@@ -60,24 +72,26 @@ mod reqwest_impl {
                 },
             )?;
 
+            let status = reqwest_response.status().as_u16();
+
             let bytes = reqwest_response
                 .bytes()
                 .await
                 .map_err(|e| Error::ClientError(Box::new(e)))?;
 
             let body = if bytes.is_empty() {
-                crate::response::Body::None
+                crate::response::ResponseBody::None
             } else {
                 String::from_utf8(bytes.to_vec())
-                    .map(crate::response::Body::Text)
-                    .unwrap_or_else(|e| crate::response::Body::Binary(e.into_bytes()))
+                    .map(crate::response::ResponseBody::Text)
+                    .unwrap_or_else(|e| crate::response::ResponseBody::Binary(e.into_bytes()))
             };
 
-            Ok(Response {
-                status,
-                headers,
-                body,
-            })
+            Ok(Response::builder()
+                .status(status)
+                .multiple_headers(headers)
+                .body(body)
+                .build())
         }
     }
 }
@@ -86,9 +100,7 @@ mod reqwest_impl {
 mod tests {
     use super::*;
     use crate::address::Scheme;
-    use crate::header::Headers;
     use crate::request::Method;
-    use crate::response::Status;
 
     fn create_blog() -> Request {
         Request::builder()
@@ -105,11 +117,11 @@ mod tests {
             .withf(move |req| *req == create_blog())
             .returning(|_| {
                 Box::pin(async move {
-                    Ok(Response {
-                        status: Status(201),
-                        headers: Headers::from_iter([("content-type", "text/plain")]),
-                        body: crate::response::Body::Text("Created".to_string()),
-                    })
+                    Ok(Response::builder()
+                        .status(201)
+                        .header("content-type", "text/plain")
+                        .body_text("Created")
+                        .build())
                 })
             });
 
@@ -118,7 +130,7 @@ mod tests {
         assert_eq!(response.headers.first("content-type"), Some("text/plain"));
         assert_eq!(
             response.body,
-            crate::response::Body::Text("Created".to_string())
+            crate::response::ResponseBody::Text("Created".to_string())
         );
     }
 }

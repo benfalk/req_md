@@ -1,6 +1,7 @@
 pub use url::Host;
 
-use url::Url;
+use crate::error::Error;
+use ::url::Url;
 
 /// # HTTP Address
 ///
@@ -8,7 +9,7 @@ use url::Url;
 /// including host, scheme, and port.
 ///
 /// ```rust
-/// # use reqmd_http::address::{Address, Scheme, Host};
+/// # use reqmd_http::{Address, Scheme, Host};
 /// let host = Host::parse("example.com").expect("valid host");
 /// let address = Address::builder(|addr|{
 ///     addr.scheme(Scheme::Https)
@@ -32,9 +33,26 @@ pub struct Address {
 }
 
 impl Address {
+    /// # Parse from URL
+    ///
+    /// ```rust
+    /// # use reqmd_http::{Address, Scheme};
+    /// # fn main() -> Result<(), reqmd_http::Error> {
+    /// let address = Address::parse("https://example.com:8080")?;
+    /// assert_eq!(address.host.to_string(), "example.com");
+    /// assert_eq!(address.scheme, Scheme::Https);
+    /// assert_eq!(address.port, Some(8080));
+    /// # Ok(()) }
+    /// ```
+    /// ---
+    pub fn parse(url: &str) -> Result<Self, Error> {
+        let parsed_url = Url::parse(url)?;
+        Ok(Self::from_url(&parsed_url))
+    }
+
     /// # Build URL
     /// ```rust
-    /// # use reqmd_http::address::{Address, Scheme, Host};
+    /// # use reqmd_http::{Address, Scheme, Host};
     /// let host = Host::parse("example.com").expect("valid host");
     /// let address = Address::builder(|addr|{
     ///     addr.scheme(Scheme::Https)
@@ -54,7 +72,7 @@ impl Address {
 
     /// # From URL
     /// ```rust
-    /// # use reqmd_http::address::{Address, Scheme};
+    /// # use reqmd_http::{Address, Scheme};
     /// let url = "https://example.com:8080".parse::<url::Url>().expect("valid URL");
     /// let address = Address::from_url(&url);
     ///
@@ -81,7 +99,7 @@ impl Address {
 
     /// # Build Address
     /// ```rust
-    /// # use reqmd_http::address::{Address, Scheme, Host};
+    /// # use reqmd_http::{Address, Scheme, Host};
     /// let host = Host::parse("127.0.0.1").expect("valid host");
     /// let address = Address::builder(|addr|{
     ///     addr.scheme(Scheme::Https)
@@ -130,7 +148,7 @@ pub enum Scheme {
 impl Scheme {
     /// # As String Representation
     /// ```rust
-    /// # use reqmd_http::address::Scheme;
+    /// # use reqmd_http::Scheme;
     /// assert_eq!(Scheme::Http.as_str(), "http");
     /// assert_eq!(Scheme::Https.as_str(), "https");
     /// ```
@@ -144,7 +162,7 @@ impl Scheme {
 
     /// # Parse Scheme String
     /// ```rust
-    /// # use reqmd_http::address::Scheme;
+    /// # use reqmd_http::Scheme;
     /// assert_eq!(Scheme::parse_str("http"), Some(Scheme::Http));
     /// assert_eq!(Scheme::parse_str("https"), Some(Scheme::Https));
     /// assert_eq!(Scheme::parse_str("ftp"), None);

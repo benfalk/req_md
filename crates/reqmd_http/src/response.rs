@@ -1,23 +1,25 @@
+pub use body::ResponseBody;
+pub use builder::ResponseBuilder;
+pub use status::Status;
+
 use crate::header::Headers;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[readonly::make]
 #[non_exhaustive]
 pub struct Response {
     pub status: Status,
     pub headers: Headers,
-    pub body: Body,
+    pub body: ResponseBody,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-#[cfg_attr(feature = "serde", serde(transparent))]
-pub struct Status(pub u16);
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-pub enum Body {
-    Text(String),
-    Binary(Vec<u8>),
-    None,
+impl Response {
+    pub fn builder() -> ResponseBuilder {
+        ResponseBuilder::new(Response::default())
+    }
 }
+
+mod body;
+mod builder;
+mod status;

@@ -10,7 +10,7 @@
 /// ---
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-pub enum Body {
+pub enum RequestBody {
     /// No body is present in the request.
     #[default]
     None,
@@ -22,11 +22,11 @@ pub enum Body {
     Text(String),
 }
 
-impl Body {
+impl RequestBody {
     /// shorthand to reference body text if it is UTF-8 encoded.
     pub fn text(&self) -> Option<&str> {
         match self {
-            Body::Text(text) => Some(text.as_str()),
+            RequestBody::Text(text) => Some(text.as_str()),
             _ => None,
         }
     }
@@ -34,9 +34,9 @@ impl Body {
     /// shorthand to reference body data as a byte slice.
     pub fn data(&self) -> &[u8] {
         match self {
-            Body::None => &[],
-            Body::Binary(data) => data.as_slice(),
-            Body::Text(text) => text.as_bytes(),
+            RequestBody::None => &[],
+            RequestBody::Binary(data) => data.as_slice(),
+            RequestBody::Text(text) => text.as_bytes(),
         }
     }
 

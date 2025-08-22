@@ -8,7 +8,7 @@ use super::Url;
 /// and is used to identify a specific resource.
 ///
 /// ```rust
-/// # use reqmd_http::request::Path;
+/// # use reqmd_http::Path;
 /// let mut path = Path::default();
 /// assert_eq!(path.as_str(), "/");
 ///
@@ -30,7 +30,7 @@ impl Path {
 
     /// attaches segment(s) string to existing path
     /// ```rust
-    /// # use reqmd_http::request::Path;
+    /// # use reqmd_http::Path;
     /// let mut path = Path::from("/api/v1");
     /// path.append("resource");
     /// assert_eq!(path.as_str(), "/api/v1/resource");
@@ -56,7 +56,7 @@ impl Path {
 
     /// determines if path is the default "/"
     /// ```rust
-    /// # use reqmd_http::request::Path;
+    /// # use reqmd_http::Path;
     /// assert!(Path::default().is_root());
     /// assert!(Path::from("").is_root());
     /// assert!(!Path::from("/api").is_root());

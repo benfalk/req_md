@@ -1,7 +1,7 @@
 /// # Query Parameters
 ///
 /// ```rust
-/// # use reqmd_http::request::QueryString;
+/// # use reqmd_http::QueryString;
 /// let query = QueryString::from_iter([
 ///     ("foo", "bar"),
 ///     ("fizz", "buzz"),
@@ -34,6 +34,15 @@ impl QueryString {
     /// Adds a new key-value pair to the query.
     pub fn add(&mut self, key: impl Into<String>, value: impl Into<String>) {
         self.0.push(QueryParameter::new(key, value));
+    }
+
+    /// adds many key-value pairs to the query.
+    pub fn insert_many<P, Q>(&mut self, params: P)
+    where
+        P: IntoIterator<Item = Q>,
+        Q: Into<QueryParameter>,
+    {
+        self.0.extend(params.into_iter().map(Into::into));
     }
 
     /// Tests if the query is empty.

@@ -1,6 +1,6 @@
 /// A list of key-value pairs representing HTTP headers.
 /// ```rust
-/// # use reqmd_http::header::Headers;
+/// # use reqmd_http::Headers;
 ///
 /// // Prepares a new Headers instance with a specified capacity
 /// let mut headers = Headers::with_capacity(2);
@@ -61,6 +61,15 @@ impl Headers {
     /// Adds a new header line with the specified key and value.
     pub fn add(&mut self, key: &str, value: &str) {
         self.0.push(HeaderLine::new(key, value));
+    }
+
+    /// Adds a new header line from a tuple of key and value.
+    pub fn insert_many<I, T>(&mut self, iter: I)
+    where
+        I: IntoIterator<Item = T>,
+        T: Into<HeaderLine>,
+    {
+        self.0.extend(iter.into_iter().map(Into::into));
     }
 
     /// Tests if the headers collection is empty.

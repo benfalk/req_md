@@ -29,7 +29,7 @@ impl RequestFactory {
     /// that was set in the factory.
     ///
     /// ```rust
-    /// # use reqmd_http::request::{Request, RequestFactory, Method};
+    /// # use reqmd_http::{Request, RequestFactory, Method};
     /// let factory = Request::factory()
     ///     .address_port(3000)
     ///     .method(Method::Put)
@@ -59,7 +59,7 @@ impl RequestFactory {
 
     /// Starts a builder with the specified method and path.
     /// ```rust
-    /// # use reqmd_http::request::{Method, Request};
+    /// # use reqmd_http::{Method, Request};
     /// let factory = Request::factory().address_port(3000).build();
     /// let req = factory
     ///     .request(Method::Delete, "/api/v1/resource/42")
@@ -80,7 +80,7 @@ impl RequestFactory {
 
     /// GET path
     /// ```rust
-    /// # use reqmd_http::request::{Method, RequestFactory};
+    /// # use reqmd_http::{Method, RequestFactory};
     /// let factory = RequestFactory::default();
     /// let request = factory.get("/api/v1/resource").build();
     ///
@@ -95,7 +95,7 @@ impl RequestFactory {
 
     /// POST path
     /// ```rust
-    /// # use reqmd_http::request::{Request, Method};
+    /// # use reqmd_http::{Request, Method};
     /// let factory = Request::factory()
     ///     .header("Content-Type", "application/json")
     ///     .build();
@@ -117,7 +117,7 @@ impl RequestFactory {
 
     /// PUT path
     /// ```rust
-    /// # use reqmd_http::request::{Request, Method};
+    /// # use reqmd_http::{Request, Method};
     /// let factory = Request::factory()
     ///     .header("Content-Type", "application/json")
     ///     .build();
@@ -139,7 +139,7 @@ impl RequestFactory {
 
     /// DELETE path
     /// ```rust
-    /// # use reqmd_http::request::{Request, Method};
+    /// # use reqmd_http::{Request, Method};
     /// let factory = Request::factory()
     ///     .header("Authorization", "Bearer some-token")
     ///     .build();
@@ -160,7 +160,7 @@ impl RequestFactory {
 
     /// PATCH path
     /// ```rust
-    /// # use reqmd_http::request::{Request, Method};
+    /// # use reqmd_http::{Request, Method};
     /// let factory = Request::factory()
     ///     .header("Authorization", "ApiKey $rofl$")
     ///     .build();

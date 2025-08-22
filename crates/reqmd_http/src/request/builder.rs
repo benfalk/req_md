@@ -1,5 +1,6 @@
-use super::{Body, Method, Path, Request};
-use crate::address::{Host, Scheme};
+use super::{Method, Path, QueryParameter, Request, RequestBody};
+use crate::address::{Address, Host, Scheme};
+use crate::header::HeaderLine;
 use std::marker::PhantomData;
 
 /// # Request Builder
@@ -10,8 +11,7 @@ use std::marker::PhantomData;
 /// request.
 ///
 /// ```rust
-/// # use reqmd_http::request::{RequestBuilder, Method, Request};
-/// # use reqmd_http::address::{Scheme, Host};
+/// # use reqmd_http::{RequestBuilder, Method, Request, Scheme, Host};
 /// let req: Request = RequestBuilder::default()
 ///     .address_scheme(Scheme::Https)
 ///     .address_host(Host::parse("example.com").unwrap())
@@ -57,13 +57,41 @@ where
         }
     }
 
+    /// sets the [address] for the request
+    ///
+    /// due to the failable nature of the address host
+    /// this allows for setting the whole address at once
+    /// from an outside failable parse of it.
+    ///
+    /// ```rust
+    /// # use reqmd_http::{Request, Address, Scheme};
+    /// # fn main() -> Result<(), reqmd_http::Error> {
+    /// let example_address = Address::parse("https://example.com:8080")?;
+    /// let req = Request::builder()
+    ///     .address(example_address)
+    ///     .get("/index.html")
+    ///     .build();
+    ///
+    /// assert_eq!(req.address.host.to_string(), "example.com");
+    /// assert_eq!(req.address.scheme, Scheme::Https);
+    /// assert_eq!(req.address.port, Some(8080));
+    /// assert_eq!(req.build_url().as_str(), "https://example.com:8080/index.html");
+    /// # Ok(()) }
+    /// ```
+    /// [address]: Address
+    /// ---
+    pub fn address(mut self, address: Address) -> Self {
+        self.request.address = address;
+        self
+    }
+
     /// set server address port number
     ///
     /// Will automatically pick a port if not provided based
     /// on the [scheme] of the request at run-time and will
     /// report as none.
     /// ```rust
-    /// # use reqmd_http::{request::Request, address::Scheme};
+    /// # use reqmd_http::{Request, Scheme};
     /// let http_default = Request::builder()
     ///     .address_scheme(Scheme::Http)
     ///     .build();
@@ -94,7 +122,6 @@ where
     /// assert_eq!(https_custom.address.port, Some(3002));
     /// assert_eq!(https_custom.build_url().as_str(), "https://localhost:3002/");
     /// ```
-    ///
     /// [scheme]: Scheme
     /// ---
     pub fn address_port(mut self, port: u16) -> Self {
@@ -102,14 +129,14 @@ where
         self
     }
 
-    /// set server address port
+    /// set server address [host]
     ///
     /// This is an infailable process; unfortunately parsing a
     /// host name is not.  Setting it once at boot in [factories]
-    /// would allow preventing to parse it all of the time.
+    /// would allow preventing the need to parse it all of the time.
     ///
     /// ```rust
-    /// # use reqmd_http::{address::Host, request::Request, error::Error};
+    /// # use reqmd_http::{Host, Request, Error};
     /// # fn main() -> Result<(), Error> {
     /// let host = Host::parse("example.com")?;
     /// let req = Request::builder()
@@ -119,7 +146,7 @@ where
     /// assert_eq!(req.build_url().as_str(), "http://example.com/");
     /// # Ok(()) }
     /// ```
-    ///
+    /// [host]: Host
     /// [factories]: Request::factory
     /// ---
     pub fn address_host<H>(mut self, host: H) -> Self
@@ -133,7 +160,7 @@ where
     /// set address [scheme]
     ///
     /// ```rust
-    /// # use reqmd_http::{address::Scheme, request::Request};
+    /// # use reqmd_http::{Scheme, Request};
     /// ```
     /// [scheme]: Scheme
     /// ---
@@ -147,7 +174,7 @@ where
 
     /// POST path
     /// ```rust
-    /// # use reqmd_http::request::{Request, Method};
+    /// # use reqmd_http::{Request, Method};
     /// let req = Request::builder()
     ///     .header("Content-Type", "application/json")
     ///     .post("/widgets")
@@ -171,7 +198,7 @@ where
 
     /// GET path
     /// ```rust
-    /// # use reqmd_http::request::{Method, Request};
+    /// # use reqmd_http::{Method, Request};
     /// let request = Request::builder()
     ///     .get("/api/v1/resource")
     ///     .build();
@@ -192,7 +219,7 @@ where
 
     /// DELETE path
     /// ```rust
-    /// # use reqmd_http::request::{Request, Method};
+    /// # use reqmd_http::{Request, Method};
     /// let req = Request::builder()
     ///     .header("Authorization", "Bearer some-token")
     ///     .delete("/foo/123")
@@ -215,7 +242,7 @@ where
 
     /// PUT path
     /// ```rust
-    /// # use reqmd_http::request::{Request, Method};
+    /// # use reqmd_http::{Request, Method};
     /// let req = Request::builder()
     ///     .header("Content-Type", "application/json")
     ///     .put("/foo")
@@ -239,7 +266,7 @@ where
 
     /// PATCH path
     /// ```rust
-    /// # use reqmd_http::request::{Request, Method};
+    /// # use reqmd_http::{Request, Method};
     /// let req = Request::builder()
     ///     .header("Authorization", "ApiKey $rofl$")
     ///     .patch("/my/email")
@@ -264,7 +291,7 @@ where
     /// set the request [method]
     ///
     /// ```rust
-    /// # use reqmd_http::request::{Request, Method};
+    /// # use reqmd_http::{Request, Method};
     /// let req = Request::builder()
     ///     .method(Method::Options)
     ///     .path("/api/*")
@@ -283,12 +310,11 @@ where
     /// set the request [path]
     ///
     /// ```rust
-    /// # use reqmd_http::request::{Request, Method};
+    /// # use reqmd_http::{Request, Method};
     /// let req = Request::builder().path("/foo").build();
     ///
     /// assert_eq!(req.path.as_str(), "/foo");
     /// ```
-    ///
     /// [path]: Path
     /// ---
     pub fn path<P>(mut self, path: P) -> Self
@@ -302,7 +328,7 @@ where
     /// add a [query] parameter key/value pair
     ///
     /// ```rust
-    /// # use reqmd_http::request::Request;
+    /// # use reqmd_http::Request;
     ///
     /// let req = Request::builder()
     ///     .path("/api")
@@ -317,7 +343,6 @@ where
     ///     "http://localhost/api?key=value&another=value2"
     /// );
     /// ```
-    ///
     /// [query]: crate::request::QueryString
     /// ---
     pub fn query_param<K, V>(mut self, key: K, value: V) -> Self
@@ -329,10 +354,40 @@ where
         self
     }
 
+    /// add multiple [query] parameters
+    ///
+    /// ```rust
+    /// # use reqmd_http::Request;
+    /// let req = Request::builder()
+    ///     .path("/search")
+    ///     .multiple_query_params([
+    ///         ("q", "rust"),
+    ///         ("page", "1"),
+    ///     ])
+    ///     .build();
+    ///
+    /// assert_eq!(req.query.first("q"), Some("rust"));
+    /// assert_eq!(req.query.first("page"), Some("1"));
+    /// assert_eq!(
+    ///     req.build_url().as_str(),
+    ///     "http://localhost/search?q=rust&page=1"
+    /// );
+    /// ```
+    /// [query]: crate::request::QueryString
+    /// ---
+    pub fn multiple_query_params<I, Q>(mut self, params: I) -> Self
+    where
+        Q: Into<QueryParameter>,
+        I: IntoIterator<Item = Q>,
+    {
+        self.request.query.insert_many(params);
+        self
+    }
+
     /// add a [header] key/value pair
     ///
     /// ```rust
-    /// #  use reqmd_http::request::Request;
+    /// #  use reqmd_http::Request;
     /// let req = Request::builder()
     ///     .header("Content-Type", "application/json")
     ///     .header("Authorization", "Bearer my-token")
@@ -341,19 +396,114 @@ where
     /// assert_eq!(req.headers.first("content-type"), Some("application/json"));
     /// assert_eq!(req.headers.first("authorization"), Some("Bearer my-token"));
     /// ```
+    /// [header]: crate::header::Headers
+    /// ---
     pub fn header(mut self, key: &str, value: &str) -> Self {
         self.request.headers.add(key, value);
         self
     }
 
+    /// add multiple [header] key/value pairs
+    ///
+    /// ```rust
+    /// # use reqmd_http::Request;
+    /// let req = Request::builder()
+    ///     .multiple_headers([
+    ///         ("Authorization", "Bearer token"),
+    ///         ("Content-Type", "application/json"),
+    ///     ])
+    ///     .build();
+    ///
+    /// assert_eq!(req.headers.first("authorization"), Some("Bearer token"));
+    /// assert_eq!(req.headers.first("content-type"), Some("application/json"));
+    /// ```
+    /// [header]: crate::header::Headers
+    /// ---
+    pub fn multiple_headers<I, H>(mut self, header_lines: I) -> Self
+    where
+        H: Into<HeaderLine>,
+        I: IntoIterator<Item = H>,
+    {
+        self.request.headers.insert_many(header_lines);
+        self
+    }
+
+    /// Prepares a [text body] for the request.
+    ///
+    /// ```rust
+    /// #  use reqmd_http::Request;
+    /// let req = Request::builder()
+    ///     .post("/api/v1/resource")
+    ///     .body_text(r#"{"name":"foo"}"#)
+    ///     .build();
+    ///
+    /// assert_eq!(req.body.text(), Some(r#"{"name":"foo"}"#));
+    /// ```
+    /// [text body]: Body::Text
+    /// ---
     pub fn body_text<B>(mut self, body: B) -> Self
     where
         B: Into<String>,
     {
-        self.request.body = Body::Text(body.into());
+        self.request.body = RequestBody::Text(body.into());
         self
     }
 
+    /// Prepares a [binary body] for the request.
+    ///
+    /// ```rust
+    /// # use reqmd_http::Request;
+    /// let req = Request::builder()
+    ///     .post("/api/v1/resource")
+    ///     .body_binary([1, 2, 3, 4])
+    ///     .build();
+    ///
+    /// assert_eq!(req.body.data(), &[1, 2, 3, 4]);
+    /// ```
+    /// [binary body]: Body::Binary
+    /// ---
+    pub fn body_binary<B>(mut self, body: B) -> Self
+    where
+        B: Into<Vec<u8>>,
+    {
+        self.request.body = RequestBody::Binary(body.into());
+        self
+    }
+
+    /// Prepares an [empty body] for the request.
+    ///
+    /// This is the default state of a request body
+    /// and you only need to call this if you want to
+    /// change the body back to empty.
+    ///
+    /// ```rust
+    /// # use reqmd_http::{Request, RequestBody};
+    /// let req = Request::builder()
+    ///     .get("/api/v1/resource")
+    ///     .body_none()
+    ///     .build();
+    ///
+    /// assert!(req.body.is_empty());
+    /// assert_eq!(req.body, RequestBody::None);
+    /// assert_eq!(req.body.text(), None);
+    /// assert_eq!(req.body.data(), &[]);
+    /// assert_eq!(req.body.len(), 0);
+    /// ```
+    /// [empty body]: Body::None
+    /// ---
+    pub fn body_none(mut self) -> Self {
+        self.request.body = RequestBody::None;
+        self
+    }
+
+    /// builds the request or target type
+    ///
+    /// The target type must implement [From<Request>]
+    /// and is normally just [Request] itself.  It is
+    /// also use by [factories] to build directly
+    ///
+    /// [factories]: Request::factory
+    /// ---
     pub fn build(self) -> Target {
         Target::from(self.request)
     }

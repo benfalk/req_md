@@ -1,9 +1,9 @@
-pub use self::body::Body;
+pub use self::body::RequestBody;
 pub use self::builder::RequestBuilder;
 pub use self::factory::RequestFactory;
 pub use self::method::Method;
 pub use self::path::Path;
-pub use self::query_string::QueryString;
+pub use self::query_string::{QueryParameter, QueryString};
 
 use crate::address::Address;
 use crate::header::Headers;
@@ -12,6 +12,35 @@ use ::url::Url;
 /// # Request
 ///
 /// Encaspsulates the request data for an HTTP request.
+///
+/// A request consists of:
+/// - [address] (scheme, host, port)
+/// - [method] (GET, POST, etc.)
+/// - [path] (the resource path)
+/// - [query string] (key-value pairs for the query string)
+/// - [Headers] (HTTP headers)
+/// - [body] (the request payload)
+///
+/// A request starts in a default state with:
+/// ```rust
+/// # use reqmd_http::{Request, Method};
+/// let request = Request::default();
+/// assert_eq!(request.method, Method::Get);
+/// assert_eq!(request.path.as_str(), "/");
+/// assert!(request.query.is_empty());
+/// assert!(request.headers.is_empty());
+/// assert!(request.body.is_empty());
+/// assert_eq!(request.build_url().as_str(), "http://localhost/");
+/// ```
+///
+/// The structure is designed to be immutable, with builder
+/// patterns provided for construction and modification.
+///
+/// [address]: Address
+/// [method]: Method
+/// [path]: Path
+/// [query string]: QueryString
+/// [body]: Body
 /// ---
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
@@ -23,7 +52,7 @@ pub struct Request {
     pub path: Path,
     pub query: QueryString,
     pub headers: Headers,
-    pub body: Body,
+    pub body: RequestBody,
 }
 
 impl Request {
@@ -33,7 +62,7 @@ impl Request {
     /// create a [Request] instance.
     ///
     /// ```rust
-    /// # use reqmd_http::request::{Request, Method, Body};
+    /// # use reqmd_http::{Request, Method};
     /// let request = Request::builder()
     ///     .address_port(3000)
     ///     .method(Method::Post)
@@ -62,9 +91,7 @@ impl Request {
     /// a base configuration for multiple requests.
     ///
     /// ```rust
-    /// # use reqmd_http::{
-    /// #   request::{Request, RequestFactory, Method, Body},
-    /// #   address::Scheme};
+    /// # use reqmd_http::{Request, RequestFactory, Method, Scheme};
     /// let factory: RequestFactory = Request::factory()
     ///     .address_port(8080)
     ///     .address_scheme(Scheme::Https)
@@ -78,7 +105,7 @@ impl Request {
     ///
     /// assert_eq!(request.method, Method::Post);
     /// assert_eq!(request.path.as_str(), "/api/v1/resource");
-    /// assert_eq!(request.body, Body::Text(r#"{"foo":"bar"}"#.into()));
+    /// assert_eq!(request.body.text(), Some(r#"{"foo":"bar"}"#));
     /// assert_eq!(request.address.scheme, Scheme::Https);
     /// assert_eq!(request.address.port, Some(8080));
     /// assert_eq!(request.headers.first("Content-Type"), Some("application/json"));
@@ -100,7 +127,7 @@ impl Request {
     /// path, and query parameters.
     ///
     /// ```rust
-    /// # use reqmd_http::request::Request;
+    /// # use reqmd_http::Request;
     /// let req = Request::builder()
     ///     .path("/search")
     ///     .query_param("q", "rust")

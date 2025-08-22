@@ -2,11 +2,7 @@
 // cargo run --example http-example --features "serde,reqwest"
 //
 
-use ::reqmd_http::address::{Host, Scheme};
-use ::reqmd_http::{
-    error::Error,
-    request::{Method, Request},
-};
+use ::reqmd_http::{Error, Host, Method, Request, Scheme};
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
@@ -38,7 +34,7 @@ async fn main() -> Result<(), Error> {
     // Reqwest client implements [reqmd_http::client::Client]
     #[cfg(feature = "reqwest")]
     {
-        use ::reqmd_http::client::Client as _;
+        use ::reqmd_http::Client as _;
         use ::reqwest::Client;
 
         // Create a new Reqwest client
