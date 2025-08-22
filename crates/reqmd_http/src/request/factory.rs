@@ -5,7 +5,7 @@ use std::sync::Arc;
 ///
 /// This is a starting point for building HTTP requests with
 /// a configured server address, method, path, query parameters.
-/// Handy when you need to create multiple requests tha all
+/// Handy when you need to create multiple requests that all
 /// require the same base configuration.
 ///
 /// For more docs see [Request::factory]
