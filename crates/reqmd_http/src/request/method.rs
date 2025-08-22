@@ -11,7 +11,7 @@
 ///   alter the state of the server
 ///
 /// - `idempotent`:
-///   A request method is considered idempoten if the
+///   A request method is considered idempotent if the
 ///   intended effect on the server of making a single
 ///   request is the same as the effect of making several
 ///   identical requests
