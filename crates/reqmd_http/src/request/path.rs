@@ -23,7 +23,7 @@ use super::Url;
 pub struct Path(Url);
 
 impl Path {
-    /// string refrence of path
+    /// string reference of path
     pub fn as_str(&self) -> &str {
         self.0.path()
     }
