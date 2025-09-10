@@ -86,3 +86,25 @@ pub enum Method {
     /// along the path to the target resource.
     Trace,
 }
+
+impl Method {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            Method::Get => "GET",
+            Method::Post => "POST",
+            Method::Put => "PUT",
+            Method::Delete => "DELETE",
+            Method::Patch => "PATCH",
+            Method::Head => "HEAD",
+            Method::Connect => "CONNECT",
+            Method::Options => "OPTIONS",
+            Method::Trace => "TRACE",
+        }
+    }
+}
+
+impl AsRef<str> for Method {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}

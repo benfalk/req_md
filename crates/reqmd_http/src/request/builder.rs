@@ -428,6 +428,25 @@ where
         self
     }
 
+    /// Sets a [body] for the request.
+    ///
+    /// ```rust
+    /// # use reqmd_http::{Request, RequestBody};
+    /// let req = Request::builder()
+    ///     .post("/api/v1/resource")
+    ///     .body(RequestBody::Binary(vec![1, 2, 3, 4]))
+    ///     .build();
+    ///
+    /// assert_eq!(req.body.data(), &[1, 2, 3, 4]);
+    /// ```
+    pub fn body<B>(mut self, body: B) -> Self
+    where
+        B: Into<RequestBody>,
+    {
+        self.request.body = body.into();
+        self
+    }
+
     /// Prepares a [text body] for the request.
     ///
     /// ```rust

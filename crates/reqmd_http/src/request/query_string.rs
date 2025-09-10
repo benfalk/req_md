@@ -95,6 +95,15 @@ impl QueryParameter {
     }
 }
 
+impl IntoIterator for QueryString {
+    type Item = QueryParameter;
+    type IntoIter = std::vec::IntoIter<QueryParameter>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.0.into_iter()
+    }
+}
+
 impl<T, F> From<(T, F)> for QueryParameter
 where
     T: Into<String>,

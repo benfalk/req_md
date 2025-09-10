@@ -1,0 +1,21 @@
+HttpGroup(
+  defaults: (
+    address: (
+      scheme: Https,
+      host: Domain("echo.free.beeceptor.com"),
+      port: None,
+    ),
+    headers: [( key: "Content-Type", value: "application/json" )],
+    query: []
+  ),
+  inputs: {
+    "240aacc2-3348-47e4-94ac-e2ebdd6b1d9d": (
+      id: "240aacc2-3348-47e4-94ac-e2ebdd6b1d9d",
+      method: Post,
+      path: "/widget",
+      query: [],
+      headers: [],
+      body: Text(r#"{"name":"foo"}"#)
+    )
+  }
+)

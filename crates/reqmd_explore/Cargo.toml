@@ -1,0 +1,15 @@
+[package]
+name = "reqmd_explore"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+color-eyre = { workspace = true }
+crossterm = { workspace = true }
+ron = { workspace = true }
+ratatui = { workspace = true }
+reqmd_core = { path = "../reqmd_core", features = ["serde"] }
+reqmd_http = { path = "../reqmd_http", features = ["serde"] }
+
+[dev-dependencies]
+rstest = { workspace = true }

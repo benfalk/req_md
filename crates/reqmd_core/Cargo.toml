@@ -5,13 +5,15 @@ edition = "2024"
 
 [features]
 default = []
-serde = ["serde/derive", "reqmd_http/serde", "url/serde"]
+serde = ["serde/derive", "reqmd_http/serde", "url/serde", "uuid/serde"]
 
 [dependencies]
+bon.workspace = true
+reqmd_http = { path = "../reqmd_http" }
+serde = { workspace = true, optional = true }
 thiserror.workspace = true
 url.workspace = true
-serde = { workspace = true, optional = true }
-reqmd_http = { path = "../reqmd_http" }
+uuid.workspace = true
 
 [dev-dependencies]
 rstest.workspace = true

@@ -1,3 +1,4 @@
+pub use ::url::Url;
 pub use address::{Address, Host, Scheme};
 pub use client::Client;
 pub use error::Error;
