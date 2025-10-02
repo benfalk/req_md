@@ -1,13 +1,7 @@
-#![allow(dead_code, unused_imports, unused_variables)]
-
-use ::ratatui::{
-    buffer::Buffer,
-    layout::Rect,
-    style::{Color, Style},
-    text::{Line, Span},
-    widgets::{Block, BorderType, Borders, Paragraph, Widget},
+use super::prelude::*;
+use crate::widgets::{
+    AddressDetailLine, BodyViewer, HeadersTable, QueryParamsTable, ResourceDetailLine,
 };
-use ::reqmd_http as http;
 
 /// # Request Detail Block
 ///
@@ -35,69 +29,44 @@ impl Widget for RequestDetailBlock<'_> {
             .border_type(BorderType::Rounded)
             .borders(Borders::ALL);
 
-        let mut lines = vec![host_line(self.request), request_line(self.request)];
-        lines.extend(query_string_lines(&self.request.query));
-        lines.extend(header_lines(&self.request.headers));
-        Paragraph::new(lines)
-            .block(display_border)
-            .render(area, buf);
+        let block_inner = display_border.inner(area);
+
+        let details = Rect {
+            x: 0,
+            y: 0,
+            width: block_inner.width,
+            height: block_inner.height.saturating_sub(3),
+        };
+
+        let params_table = QueryParamsTable::from(self.request);
+        let headers_table = HeadersTable::from(self.request);
+        let body_viewer = BodyViewer::from(self.request);
+
+        let [
+            address_layout,
+            resource_layout,
+            headers_layout,
+            query_params_layout,
+            body_viewer_layout,
+        ] = Layout::vertical([
+            Constraint::Length(1),
+            Constraint::Length(1),
+            Constraint::Length(headers_table.min_height()),
+            Constraint::Length(params_table.min_height()),
+            Constraint::Length(body_viewer.min_height()),
+        ])
+        .flex(ratatui::layout::Flex::Start)
+        .areas(details);
+
+        let mut view = ScrollView::new(Size::new(block_inner.width, block_inner.height));
+        view.render_widget(AddressDetailLine::from(self.request), address_layout);
+        view.render_widget(ResourceDetailLine::from(self.request), resource_layout);
+        view.render_widget(params_table, query_params_layout);
+        view.render_widget(headers_table, headers_layout);
+        view.render_widget(body_viewer, body_viewer_layout);
+        let mut state = ScrollViewState::default();
+        view.render(block_inner, buf, &mut state);
+
+        display_border.render(area, buf);
     }
-}
-
-fn blank_line() -> Line<'static> {
-    Line::from(Span::raw(""))
-}
-
-fn host_line(req: &http::Request) -> Line<'_> {
-    Line::from_iter([
-        Span::styled("Host: ", Style::default().fg(Color::LightBlue)),
-        Span::raw(req.address.build_url().to_string()),
-    ])
-}
-
-fn request_line(req: &http::Request) -> Line<'_> {
-    Line::from(Span::styled(
-        format!("{} {}", req.method.as_str(), req.path.as_str()),
-        Style::default().fg(Color::Yellow),
-    ))
-}
-
-fn query_string_lines(params: &http::QueryString) -> Vec<Line<'_>> {
-    if params.is_empty() {
-        return vec![Line::from(Span::styled(
-            "QueryString: (none)",
-            Style::default().fg(Color::LightBlue),
-        ))];
-    }
-
-    std::iter::once(Line::from(Span::styled(
-        "QueryString:",
-        Style::default().fg(Color::LightBlue),
-    )))
-    .chain(
-        params
-            .iter()
-            .map(|p| Line::from(Span::raw(format!("  • {} = {}", p.key, p.value)))),
-    )
-    .collect()
-}
-
-fn header_lines(headers: &http::Headers) -> Vec<Line<'_>> {
-    if headers.is_empty() {
-        return vec![Line::from(Span::styled(
-            "Headers: (none)",
-            Style::default().fg(Color::LightBlue),
-        ))];
-    }
-
-    std::iter::once(Line::from(Span::styled(
-        "Headers:",
-        Style::default().fg(Color::LightBlue),
-    )))
-    .chain(
-        headers
-            .iter()
-            .map(|h| Line::from(Span::raw(format!("  • {}: {}", h.key, h.value)))),
-    )
-    .collect()
 }

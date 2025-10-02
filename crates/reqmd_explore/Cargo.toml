@@ -10,6 +10,7 @@ ron = { workspace = true }
 ratatui = { workspace = true }
 reqmd_core = { path = "../reqmd_core", features = ["serde"] }
 reqmd_http = { path = "../reqmd_http", features = ["serde"] }
+tui-scrollview = { workspace = true }
 
 [dev-dependencies]
 rstest = { workspace = true }
