@@ -18,6 +18,14 @@ pub struct App {
 }
 
 impl App {
+    pub fn new(requests: Vec<http::Request>) -> Self {
+        Self {
+            should_halt: false,
+            requests,
+            explorer_state: ExplorerState::default(),
+        }
+    }
+
     pub fn run(&mut self, terminal: &mut DefaultTerminal) -> Result<()> {
         Explorer::new(&self.requests).next(&mut self.explorer_state);
         while !self.should_halt {
@@ -58,11 +66,7 @@ impl App {
 
 impl From<HttpGroup> for App {
     fn from(group: HttpGroup) -> Self {
-        Self {
-            should_halt: false,
-            requests: group.iter_requests().map(|(_, req)| req).collect(),
-            explorer_state: ExplorerState::default(),
-        }
+        Self::new(group.iter_requests().map(|(_, req)| req).collect())
     }
 }
 

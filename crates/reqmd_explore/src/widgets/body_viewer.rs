@@ -38,14 +38,14 @@ impl StatefulWidget for BodyViewer<'_> {
     {
         let display_border = Block::default()
             .title_alignment(Alignment::Center)
-            .title("◀︎[ Body ]▶︎")
+            .title(" Body ")
             .border_type(BorderType::Rounded)
             .borders(Borders::ALL);
 
         match self.body {
             http::RequestBody::None => {
-                let empty_msg = Paragraph::new("No Body")
-                    .style(Style::default().fg(Color::DarkGray).italic())
+                let empty_msg = Paragraph::new("")
+                    .style(Style::default().fg(Color::DarkGray))
                     .alignment(Alignment::Center)
                     .block(display_border);
                 empty_msg.render(area, buf);
