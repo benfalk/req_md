@@ -6,7 +6,6 @@ use crate::header::Headers;
 
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-#[readonly::make]
 #[non_exhaustive]
 pub struct Response {
     pub status: Status,

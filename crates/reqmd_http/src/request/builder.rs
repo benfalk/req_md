@@ -1,6 +1,6 @@
-use super::{Method, Path, QueryParameter, Request, RequestBody};
+use super::{Method, Path, QueryParameter, QueryString, Request, RequestBody};
 use crate::address::{Address, Host, Scheme};
-use crate::header::HeaderLine;
+use crate::header::{HeaderLine, Headers};
 use std::marker::PhantomData;
 
 /// # Request Builder
@@ -384,6 +384,29 @@ where
         self
     }
 
+    /// sets the entire [query string] for the request
+    ///
+    /// ```rust
+    /// # use reqmd_http::{Request, QueryString};
+    /// let query = QueryString::from_iter([
+    ///     ("foo", "bar"),
+    ///     ("bing", "bong"),
+    /// ]);
+    ///
+    /// let req = Request::builder()
+    ///     .with_query_string(query)
+    ///     .build();
+    ///
+    /// assert_eq!(req.query.first("foo"), Some("bar"));
+    /// assert_eq!(req.query.first("bing"), Some("bong"));
+    /// ```
+    /// [query string]: crate::request::QueryString
+    /// ---
+    pub fn with_query_string(mut self, query: QueryString) -> Self {
+        self.request.query = query;
+        self
+    }
+
     /// add a [header] key/value pair
     ///
     /// ```rust
@@ -428,6 +451,29 @@ where
         self
     }
 
+    /// sets the entire [headers] collection for the request
+    ///
+    /// ```rust
+    /// # use reqmd_http::{Request, Headers};
+    /// let headers = Headers::from_iter([
+    ///     ("Authorization", "Bearer token"),
+    ///     ("Content-Type", "application/json"),
+    /// ]);
+    ///
+    /// let req = Request::builder()
+    ///     .with_headers(headers)
+    ///     .build();
+    ///
+    /// assert_eq!(req.headers.first("authorization"), Some("Bearer token"));
+    /// assert_eq!(req.headers.first("content-type"), Some("application/json"));
+    /// ```
+    /// [headers]: crate::header::Headers
+    /// ---
+    pub fn with_headers(mut self, headers: Headers) -> Self {
+        self.request.headers = headers;
+        self
+    }
+
     /// Sets a [body] for the request.
     ///
     /// ```rust
@@ -439,6 +485,8 @@ where
     ///
     /// assert_eq!(req.body.data(), &[1, 2, 3, 4]);
     /// ```
+    /// [body]: crate::RequestBody
+    /// ---
     pub fn body<B>(mut self, body: B) -> Self
     where
         B: Into<RequestBody>,
@@ -458,7 +506,7 @@ where
     ///
     /// assert_eq!(req.body.text(), Some(r#"{"name":"foo"}"#));
     /// ```
-    /// [text body]: Body::Text
+    /// [text body]: crate::RequestBody::Text
     /// ---
     pub fn body_text<B>(mut self, body: B) -> Self
     where
@@ -479,7 +527,7 @@ where
     ///
     /// assert_eq!(req.body.data(), &[1, 2, 3, 4]);
     /// ```
-    /// [binary body]: Body::Binary
+    /// [binary body]: crate::RequestBody::Binary
     /// ---
     pub fn body_binary<B>(mut self, body: B) -> Self
     where
@@ -508,7 +556,7 @@ where
     /// assert_eq!(req.body.data(), &[]);
     /// assert_eq!(req.body.len(), 0);
     /// ```
-    /// [empty body]: Body::None
+    /// [empty body]: crate::RequestBody::None
     /// ---
     pub fn body_none(mut self) -> Self {
         self.request.body = RequestBody::None;

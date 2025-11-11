@@ -3,4 +3,21 @@ name = "reqmd_markdown"
 version = "0.1.0"
 edition = "2024"
 
+[features]
+default = []
+serde = ["serde/derive", "reqmd_http/serde", "url/serde"]
+
 [dependencies]
+bon.workspace = true
+markdown.workspace = true
+nom.workspace = true
+reqmd_http = { path = "../reqmd_http" }
+reqmd_core = { path = "../reqmd_core" }
+serde.workspace = true
+serde-saphyr.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+url.workspace = true
+
+[dev-dependencies]
+rstest.workspace = true

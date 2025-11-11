@@ -2,6 +2,7 @@ use ::reqmd_http as http;
 
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(default))]
 #[non_exhaustive]
 pub struct HttpDefaults {
     pub address: http::Address,

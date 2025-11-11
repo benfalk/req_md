@@ -1,0 +1,4 @@
+POST /widgets
+     ?foo=bar
+     &rofl=copter
+Authorization: Bearer abcd1234

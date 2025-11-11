@@ -108,3 +108,22 @@ impl AsRef<str> for Method {
         self.as_str()
     }
 }
+
+impl ::std::str::FromStr for Method {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "GET" => Ok(Self::Get),
+            "POST" => Ok(Self::Post),
+            "PUT" => Ok(Self::Put),
+            "DELETE" => Ok(Self::Delete),
+            "PATCH" => Ok(Self::Patch),
+            "HEAD" => Ok(Self::Head),
+            "CONNECT" => Ok(Self::Connect),
+            "OPTIONS" => Ok(Self::Options),
+            "TRACE" => Ok(Self::Trace),
+            _ => Err(()),
+        }
+    }
+}

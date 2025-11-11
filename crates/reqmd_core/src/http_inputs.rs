@@ -3,7 +3,6 @@ use ::reqmd_http as http;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-#[non_exhaustive]
 pub struct HttpInputs {
     pub id: Id,
     pub address: Option<http::Address>,

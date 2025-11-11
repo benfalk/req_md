@@ -25,6 +25,7 @@ use ::url::Url;
 /// ---
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(default))]
 #[non_exhaustive]
 pub struct Address {
     pub host: Host,

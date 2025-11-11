@@ -44,7 +44,7 @@ use ::url::Url;
 /// ---
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-#[readonly::make]
+#[cfg_attr(feature = "serde", serde(default))]
 #[non_exhaustive]
 pub struct Request {
     pub address: Address,
