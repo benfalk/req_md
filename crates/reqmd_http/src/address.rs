@@ -137,7 +137,7 @@ impl Default for Address {
 }
 
 /// HTTP scheme, either HTTP or HTTPS.
-#[derive(Debug, Clone, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Copy)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[non_exhaustive]
 pub enum Scheme {

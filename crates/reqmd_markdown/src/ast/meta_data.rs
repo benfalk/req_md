@@ -1,7 +1,6 @@
-use super::Position;
+use super::{GlobalHttpDefaults, Position};
 use crate::Error;
 use ::markdown::mdast;
-use ::reqmd_core::HttpDefaults;
 
 /// # Meta Data AST
 ///
@@ -17,7 +16,7 @@ use ::reqmd_core::HttpDefaults;
 pub struct MetaData {
     pub title: Option<String>,
     pub description: Option<String>,
-    pub http: HttpDefaults,
+    pub http: GlobalHttpDefaults,
     pub position: Option<Position>,
 }
 
@@ -28,7 +27,7 @@ impl MetaData {
         struct Data {
             title: Option<String>,
             description: Option<String>,
-            http: HttpDefaults,
+            http: GlobalHttpDefaults,
         }
 
         let maybe_yaml = node

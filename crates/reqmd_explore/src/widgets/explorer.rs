@@ -61,3 +61,13 @@ impl<'a> Explorer<'a> {
         }
     }
 }
+
+impl ExplorerState {
+    pub fn unselect(&mut self) {
+        self.list_state.select(None);
+    }
+
+    pub fn selected(&self) -> Option<usize> {
+        self.list_state.selected()
+    }
+}
