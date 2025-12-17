@@ -46,9 +46,12 @@ fn http_method(input: &str) -> IResult<&str, http::Method> {
 }
 
 fn http_path(input: &str) -> IResult<&str, http::Path> {
-    recognize(many1_count(alt((alphanumeric1, tag("/")))))
-        .map(http::Path::from)
-        .parse(input)
+    recognize(many1_count(alt((
+        alphanumeric1,
+        is_a("-._~!$&'()*+,;=:/@"),
+    ))))
+    .map(http::Path::from)
+    .parse(input)
 }
 
 fn http_query_string(input: &str) -> IResult<&str, http::QueryString> {
@@ -130,6 +133,14 @@ mod tests {
         let (rest, path) = result.unwrap();
         assert_eq!(path.as_str(), "/api/v1/widgets");
         assert_eq!(rest, "?rofl=copter");
+    }
+
+    #[rstest::rstest]
+    fn parse_path_with_special_characters() {
+        let result = http_path("/api/v1/widg-ets._~!$&'()*+,;=:/@").finish();
+        let (rest, path) = result.unwrap();
+        assert_eq!(path.as_str(), "/api/v1/widg-ets._~!$&'()*+,;=:/@");
+        assert_eq!(rest, "");
     }
 
     #[rstest::rstest]

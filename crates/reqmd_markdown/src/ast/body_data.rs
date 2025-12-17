@@ -28,12 +28,11 @@ pub struct BodyData {
 
 impl From<Code> for BodyData {
     fn from(code_block: Code) -> Self {
-        let position = code_block.position.map(Position::from);
         BodyData {
             content: http::RequestBody::Text(code_block.value),
             lang: code_block.lang,
             meta: code_block.meta,
-            position,
+            position: code_block.position.map(Position::from),
         }
     }
 }

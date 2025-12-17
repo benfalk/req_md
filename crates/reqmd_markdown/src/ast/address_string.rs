@@ -57,14 +57,31 @@ impl AsRef<str> for AddressString {
     }
 }
 
+impl ::std::str::FromStr for AddressString {
+    type Err = crate::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let address = http::Address::parse(s).map_err(|err| {
+            crate::Error::Parse(format!(
+                "Error Parsing AddressString: {message}",
+                message = err
+            ))
+        })?;
+        Ok(AddressString {
+            address,
+            data: s.to_string(),
+        })
+    }
+}
+
 impl<'de> ::serde::de::Deserialize<'de> for AddressString {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: ::serde::de::Deserializer<'de>,
     {
-        let data = String::deserialize(deserializer)?;
-        let address = http::Address::parse(&data).map_err(::serde::de::Error::custom)?;
-        Ok(AddressString { address, data })
+        String::deserialize(deserializer)?
+            .parse()
+            .map_err(::serde::de::Error::custom)
     }
 }
 

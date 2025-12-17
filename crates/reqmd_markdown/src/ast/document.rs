@@ -19,14 +19,10 @@ pub struct Document {
 
 impl Document {
     pub(crate) fn from_mdast(node: &mdast::Node) -> Result<Self, Error> {
-        let meta = MetaData::from_mdast(node)?;
-        let requests = HttpData::collect_from_mdast(node)?;
-        let position = node.position().map(Position::from);
-
         Ok(Document {
-            meta,
-            requests,
-            position,
+            meta: MetaData::from_mdast(node)?,
+            requests: HttpData::collect_from_mdast(node)?,
+            position: node.position().map(Position::from),
         })
     }
 }

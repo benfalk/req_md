@@ -5,9 +5,10 @@ use ::markdown::{Constructs, ParseOptions};
 /// Parse Markdown Document
 ///
 /// Scans a markdown formatted string and produces
-/// a [Document]. This document contains all of the
+/// a [document]. This document contains all of the
 /// [http request] information for use.
 ///
+/// [document]: Document
 /// [http request]: ::reqmd_http
 /// ---
 pub fn parse_markdown(input: &str) -> Result<Document, Error> {

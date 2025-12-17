@@ -7,9 +7,7 @@ edition = "2024"
 clap = { workspace = true, features = ["derive"] }
 color-eyre = { workspace = true }
 crossterm = { workspace = true }
-ron = { workspace = true }
 ratatui = { workspace = true }
-reqmd_core = { path = "../reqmd_core", features = ["serde"] }
 reqmd_http = { path = "../reqmd_http", features = ["serde", "reqwest"] }
 reqmd_markdown = { path = "../reqmd_markdown", features = ["serde"] }
 reqwest = { workspace = true }

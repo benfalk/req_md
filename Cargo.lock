@@ -167,9 +167,6 @@ name = "bitflags"
 version = "2.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1b8e56985ec62d17e9c1001dc89c88ecd7dc08e47eba5ec7c29c7b5eeecde967"
-dependencies = [
- "serde",
-]
 
 [[package]]
 name = "bon"
@@ -1728,6 +1725,7 @@ version = "0.1.0"
 dependencies = [
  "bon",
  "reqmd_http",
+ "reqmd_markdown",
  "rstest 0.26.1",
  "serde",
  "thiserror 2.0.12",
@@ -1743,11 +1741,9 @@ dependencies = [
  "color-eyre",
  "crossterm 0.29.0",
  "ratatui",
- "reqmd_core",
  "reqmd_http",
  "reqmd_markdown",
  "reqwest",
- "ron",
  "rstest 0.26.1",
  "tokio",
  "tui-scrollview",
@@ -1775,7 +1771,6 @@ dependencies = [
  "bon",
  "markdown",
  "nom",
- "reqmd_core",
  "reqmd_http",
  "rstest 0.26.1",
  "serde",
@@ -1839,20 +1834,6 @@ dependencies = [
  "libc",
  "untrusted",
  "windows-sys 0.52.0",
-]
-
-[[package]]
-name = "ron"
-version = "0.12.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fd490c5b18261893f14449cbd28cb9c0b637aebf161cd77900bfdedaff21ec32"
-dependencies = [
- "bitflags 2.9.1",
- "once_cell",
- "serde",
- "serde_derive",
- "typeid",
- "unicode-ident",
 ]
 
 [[package]]
@@ -2667,12 +2648,6 @@ name = "typed-arena"
 version = "2.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6af6ae20167a9ece4bcb41af5b80f8a1f1df981f6391189ce00fd257af04126a"
-
-[[package]]
-name = "typeid"
-version = "1.0.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bc7d623258602320d5c55d1bc22793b57daff0ec7efc270ea7d55ce1d5f5471c"
 
 [[package]]
 name = "unicode-id"

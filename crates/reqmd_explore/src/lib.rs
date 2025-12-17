@@ -6,7 +6,6 @@ use crate::widgets::{Explorer, ExplorerState};
 use ::color_eyre::Result;
 use ::crossterm::event::{self, Event};
 use ::ratatui::DefaultTerminal;
-use ::reqmd_core::HttpGroup;
 use ::reqmd_http as http;
 use ::reqmd_markdown as markdown;
 use std::time::Duration;
@@ -75,12 +74,6 @@ impl App {
     }
 }
 
-impl From<HttpGroup> for App {
-    fn from(group: HttpGroup) -> Self {
-        Self::new(group.iter_requests().map(|(_, req)| req).collect())
-    }
-}
-
 impl From<markdown::ast::Document> for App {
     fn from(doc: markdown::ast::Document) -> Self {
         let factory = doc.meta.http.factory();
@@ -102,6 +95,4 @@ impl From<markdown::ast::Document> for App {
     }
 }
 
-#[cfg(test)]
-pub mod support;
 pub mod widgets;

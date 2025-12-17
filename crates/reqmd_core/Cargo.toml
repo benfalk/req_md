@@ -10,6 +10,7 @@ serde = ["serde/derive", "reqmd_http/serde", "url/serde", "uuid/serde"]
 [dependencies]
 bon.workspace = true
 reqmd_http = { path = "../reqmd_http" }
+reqmd_markdown = { path = "../reqmd_markdown" }
 serde = { workspace = true, optional = true }
 thiserror.workspace = true
 url.workspace = true

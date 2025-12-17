@@ -12,7 +12,6 @@ bon.workspace = true
 markdown.workspace = true
 nom.workspace = true
 reqmd_http = { path = "../reqmd_http" }
-reqmd_core = { path = "../reqmd_core" }
 serde.workspace = true
 serde-saphyr.workspace = true
 serde_json.workspace = true
