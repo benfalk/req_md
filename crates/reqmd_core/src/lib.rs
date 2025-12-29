@@ -1,13 +1,19 @@
 //!
 //! # ReqMD Core
 //!
-//#![allow(dead_code, unused_variables, unused_imports, unused_mut)]
 
 pub use error::Error;
+pub use factory::{DefaultProvider, Factory, FactoryProcessor};
 pub use file::File;
+pub use md_request::MdRequest;
+
+pub mod builtin_processors;
+pub mod builtin_providers;
 
 mod error;
+mod factory;
 mod file;
+mod md_request;
 
 #[cfg(test)]
 mod support;

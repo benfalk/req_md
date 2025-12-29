@@ -1,5 +1,5 @@
 use super::{GlobalHttpDefaults, Position};
-use crate::Error;
+use crate::{Error, parsing::ParseContext};
 use ::markdown::mdast;
 
 /// # Meta Data AST
@@ -20,8 +20,10 @@ pub struct MetaData {
     pub position: Option<Position>,
 }
 
-impl MetaData {
-    pub(crate) fn from_mdast(node: &mdast::Node) -> Result<Self, Error> {
+impl TryFrom<&ParseContext<'_>> for MetaData {
+    type Error = Error;
+
+    fn try_from(value: &ParseContext) -> Result<Self, Self::Error> {
         #[derive(::serde::Deserialize, Default)]
         #[serde(default)]
         struct Data {
@@ -30,18 +32,18 @@ impl MetaData {
             http: GlobalHttpDefaults,
         }
 
-        let maybe_yaml = node
-            .children()
-            .and_then(|children| children.first())
-            .and_then(|first_child| match first_child {
-                mdast::Node::Yaml(yaml) => Some((&yaml.position, &yaml.value)),
-                _ => None,
-            });
+        let maybe_yaml = value.root.children.first().and_then(|node| match node {
+            mdast::Node::Yaml(yaml) => Some((&yaml.position, &yaml.value)),
+            _ => None,
+        });
 
         if let Some((position, yaml_str)) = maybe_yaml {
-            let data: Data = ::serde_saphyr::from_str(yaml_str)
-                .map_err(|err| Error::Parse(format!("frontmatter: {}", err)))?;
-            Ok(MetaData {
+            let data: Data =
+                ::serde_saphyr::from_str(yaml_str).map_err(|err| Error::InvalidYaml {
+                    input: yaml_str.to_owned(),
+                    message: err.to_string(),
+                })?;
+            Ok(Self {
                 title: data.title,
                 description: data.description,
                 http: data.http,
@@ -57,11 +59,11 @@ impl MetaData {
 mod tests {
     use super::*;
     use crate::ast::Point;
-    use crate::support::fixtures::*;
+    use crate::support::fixtures::post_widget_parse_context as ctx;
 
     #[rstest::rstest]
-    fn parses_from_mardown_ast(post_widget_mdast: mdast::Node) {
-        let default = MetaData::from_mdast(&post_widget_mdast).unwrap();
+    fn parses_from_mardown_ast(ctx: ParseContext<'static>) {
+        let default = MetaData::try_from(&ctx).unwrap();
         assert!(default.title.is_none());
         assert!(default.description.is_none());
         assert_eq!(

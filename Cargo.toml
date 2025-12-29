@@ -33,7 +33,7 @@ regex = "1.11.0"
 reqwest = { version = "0.12.0", features = ["blocking"] }
 ron = { version = "0.12.0" }
 serde = { version = "1.0.0", features = ["derive"] }
-serde-saphyr = "0.0.7"
+serde-saphyr = "0.0.11"
 serde_json = "1.0.0"
 thiserror = "2.0.0"
 tokio = { version = "1.47.0", features = ["full"] }
@@ -42,9 +42,10 @@ tracing-subscriber = "0.3.0"
 tui-scrollview = { version = "0.5.1" }
 url = "2.5.0"
 uuid = { version = "1.18.0", features = ["v7"] }
+indoc = "2"
 
 #
 # ## Dev Dependencies to Keep:
 #
 rstest = "0.26.0"
-mockall = "0.13.0"
+mockall = "0.14.0"

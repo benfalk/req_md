@@ -1,6 +1,5 @@
 use super::{HttpData, MetaData, Position};
-use crate::Error;
-use ::markdown::mdast;
+use crate::{Error, parsing::ParseContext};
 
 /// # Markdown Document AST
 ///
@@ -14,15 +13,17 @@ use ::markdown::mdast;
 pub struct Document {
     pub meta: MetaData,
     pub requests: Vec<HttpData>,
-    pub position: Option<Position>,
+    pub position: Position,
 }
 
-impl Document {
-    pub(crate) fn from_mdast(node: &mdast::Node) -> Result<Self, Error> {
+impl TryFrom<&ParseContext<'_>> for Document {
+    type Error = Error;
+
+    fn try_from(value: &ParseContext<'_>) -> Result<Self, Self::Error> {
         Ok(Document {
-            meta: MetaData::from_mdast(node)?,
-            requests: HttpData::collect_from_mdast(node)?,
-            position: node.position().map(Position::from),
+            meta: MetaData::try_from(value)?,
+            requests: HttpData::try_collect(value)?,
+            position: Position::try_from(&value.root)?,
         })
     }
 }
@@ -31,12 +32,12 @@ impl Document {
 mod tests {
     use super::*;
     use crate::ast::Point;
-    use crate::support::fixtures::*;
+    use crate::support::fixtures::post_widget_parse_context as ctx;
     use ::reqmd_http as http;
 
     #[rstest::rstest]
-    fn parse_document(post_widget_mdast: mdast::Node) {
-        let doc = Document::from_mdast(&post_widget_mdast).unwrap();
+    fn parse_document(ctx: ParseContext<'static>) {
+        let doc = Document::try_from(&ctx).unwrap();
         assert_eq!(doc.requests.len(), 1);
         assert!(doc.meta.title.is_none());
         assert!(doc.meta.description.is_none());
@@ -49,7 +50,7 @@ mod tests {
         );
 
         assert_eq!(
-            doc.position.unwrap(),
+            doc.position,
             Position {
                 start: Point {
                     line: 1,
@@ -95,19 +96,19 @@ mod tests {
         );
 
         assert_eq!(
-            http.position.as_ref(),
-            Some(&Position {
+            http.position,
+            Position {
                 start: Point {
-                    line: 12,
+                    line: 8,
                     column: 1,
-                    offset: 142
+                    offset: 80
                 },
                 end: Point {
                     line: 24,
                     column: 4,
                     offset: 305
                 },
-            })
+            }
         );
     }
 }

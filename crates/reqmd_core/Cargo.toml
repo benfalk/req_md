@@ -6,15 +6,20 @@ edition = "2024"
 [features]
 default = []
 serde = ["serde/derive", "reqmd_http/serde", "url/serde", "uuid/serde"]
+yaml-as-json = ["serde", "serde-saphyr", "serde_json"]
 
 [dependencies]
 bon.workspace = true
 reqmd_http = { path = "../reqmd_http" }
 reqmd_markdown = { path = "../reqmd_markdown" }
-serde = { workspace = true, optional = true }
 thiserror.workspace = true
 url.workspace = true
 uuid.workspace = true
+
+# Optional dependencies
+serde = { workspace = true, optional = true }
+serde-saphyr = { workspace = true, optional = true }
+serde_json = { workspace = true, optional = true }
 
 [dev-dependencies]
 rstest.workspace = true

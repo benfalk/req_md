@@ -7,6 +7,21 @@
 pub enum Error {
     #[error("Markdown parsing error: {0}")]
     Parse(String),
+
+    #[error("Expected root node, found: {found:?}")]
+    MissingRoot { found: Box<::markdown::mdast::Node> },
+
+    #[error("Invalid YAML with error: {message}")]
+    InvalidYaml { input: String, message: String },
+
+    #[error("Required position missing from node: {node:?}")]
+    MissingPosition { node: Box<::markdown::mdast::Node> },
+
+    #[error("Unable to read position offset: {position:?}")]
+    InvalidOffset {
+        data: Box<str>,
+        position: Box<crate::ast::Position>,
+    },
 }
 
 impl From<::markdown::message::Message> for Error {

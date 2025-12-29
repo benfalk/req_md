@@ -1,6 +1,6 @@
 use crate::Error;
 use crate::ast::Document;
-use ::markdown::{Constructs, ParseOptions};
+use ::markdown::{Constructs, ParseOptions, mdast};
 
 /// Parse Markdown Document
 ///
@@ -12,15 +12,32 @@ use ::markdown::{Constructs, ParseOptions};
 /// [http request]: ::reqmd_http
 /// ---
 pub fn parse_markdown(input: &str) -> Result<Document, Error> {
-    let options = ParseOptions {
-        constructs: Constructs {
-            frontmatter: true,
-            ..Constructs::default()
-        },
-        ..Default::default()
-    };
-    let mdast = ::markdown::to_mdast(input, &options)?;
-    Document::from_mdast(&mdast)
+    let context = ParseContext::build(input)?;
+    Document::try_from(&context)
+}
+
+#[derive(Debug, Clone)]
+pub(crate) struct ParseContext<'a> {
+    pub input: &'a str,
+    pub root: mdast::Root,
+}
+
+impl<'a> ParseContext<'a> {
+    pub fn build(input: &'a str) -> Result<Self, Error> {
+        let options = ParseOptions {
+            constructs: Constructs {
+                frontmatter: true,
+                ..Constructs::default()
+            },
+            ..Default::default()
+        };
+        match ::markdown::to_mdast(input, &options)? {
+            mdast::Node::Root(root) => Ok(ParseContext { input, root }),
+            node => Err(Error::MissingRoot {
+                found: Box::new(node),
+            }),
+        }
+    }
 }
 
 #[cfg(test)]
@@ -35,8 +52,8 @@ mod tests {
         let doc = parse_markdown(post_widget_md)?;
         assert_eq!(doc.requests.len(), 1);
         assert_eq!(
-            doc.position.as_ref(),
-            Some(&Position {
+            doc.position,
+            Position {
                 start: Point {
                     line: 1,
                     column: 1,
@@ -47,7 +64,7 @@ mod tests {
                     column: 1,
                     offset: 306
                 },
-            })
+            }
         );
 
         let req = doc.requests.first().unwrap();
@@ -61,19 +78,19 @@ mod tests {
             Some("{\n  \"name\": \"XFox\",\n  \"desc\": \"Wonderful widget!\"\n}")
         );
         assert_eq!(
-            req.position.as_ref(),
-            Some(&Position {
+            req.position,
+            Position {
                 start: Point {
-                    line: 12,
+                    line: 8,
                     column: 1,
-                    offset: 142
+                    offset: 80
                 },
                 end: Point {
                     line: 24,
                     column: 4,
                     offset: 305
                 },
-            })
+            }
         );
         Ok(())
     }
