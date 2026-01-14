@@ -58,7 +58,7 @@ fn http_query_string(input: &str) -> IResult<&str, http::QueryString> {
     fn char_group(input: &str) -> IResult<&str, String> {
         recognize(many1_count(alt((
             alphanumeric1,
-            is_a("@!\"'$%^*_-+()<>[]{}/|;`"),
+            is_a("@!\"'$%^*_-+()<>[]{}/|;`."),
             preceded(
                 tag("\\"),
                 alt((tag(" "), tag("="), tag("&"), tag("?"), tag("\\"))),
@@ -152,6 +152,15 @@ mod tests {
     }
 
     #[rstest::rstest]
+    fn query_string_with_dollar_signs() {
+        let result = http_query_string("?price=$19.99&$ENV=true").finish();
+        let (rest, query) = result.unwrap();
+        assert_eq!(query.first("price"), Some("$19.99"));
+        assert_eq!(query.first("$ENV"), Some("true"));
+        assert_eq!("", rest);
+    }
+
+    #[rstest::rstest]
     fn multi_line_query_string() {
         let input = r#"?foo=bar
                        &biz=baz
@@ -170,6 +179,15 @@ mod tests {
         let result = http_headers(input).finish();
         let (rest, headers) = result.unwrap();
         assert_eq!(headers.first("Content-Type"), Some("application/json"));
+        assert_eq!("", rest);
+    }
+
+    #[rstest::rstest]
+    fn header_with_dollar_signs() {
+        let input = "X-Api-Key: $API_KEY";
+        let result = http_headers(input).finish();
+        let (rest, headers) = result.unwrap();
+        assert_eq!(headers.first("X-Api-Key"), Some("$API_KEY"));
         assert_eq!("", rest);
     }
 

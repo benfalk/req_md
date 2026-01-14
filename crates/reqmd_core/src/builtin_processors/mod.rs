@@ -9,8 +9,10 @@
 //! [factory build]: crate::factory::Factory::build_requests
 //! ---
 
+pub use env_var_expansion::EnvVarExpansion;
 #[cfg(feature = "yaml-as-json")]
-pub use yaml_as_json::YamlAsJsonProcessor;
+pub use yaml_as_json::YamlAsJson;
 
+mod env_var_expansion;
 #[cfg(feature = "yaml-as-json")]
 mod yaml_as_json;

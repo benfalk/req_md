@@ -3,13 +3,24 @@ use ::reqmd_http as http;
 use ::reqmd_markdown::ast;
 use ::serde_json::Value as JsonValue;
 
+/// # Yaml as JSON Processor
+///
+/// This processor converts HTTP request bodies written in YAML
+/// into json when the body language is set to `yaml` or `yml`.
+/// The code block must also include the `send-as-json` meta tag
+/// or it will be ignored.
+///
+/// The text following the code fence should look something like
+/// this: `yml send-as-json`.
+///
+/// ---
 #[derive(Debug, Clone, Default)]
 #[non_exhaustive]
-pub struct YamlAsJsonProcessor;
+pub struct YamlAsJson;
 
-impl FactoryProcessor for YamlAsJsonProcessor {
+impl FactoryProcessor for YamlAsJson {
     fn name(&self) -> &str {
-        "YamlAsJsonProcessor"
+        "YamlAsJson"
     }
 
     fn update_request(
@@ -56,7 +67,7 @@ mod tests {
     #[rstest::rstest]
     fn yaml_as_json_processor_works(file: crate::File) {
         let mut factory = crate::Factory::default();
-        factory.register_factory_processor(YamlAsJsonProcessor::default());
+        factory.register_factory_processor(YamlAsJson::default());
 
         let requests = factory.build_requests(&file).unwrap();
 

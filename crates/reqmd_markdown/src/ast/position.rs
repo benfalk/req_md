@@ -35,7 +35,9 @@ impl Position {
         Ok(substring)
     }
 
-    pub fn between(&self, other: &Self) -> Option<Range<usize>> {
+    /// determines the range between this position and another position,
+    /// if they do not overlap
+    pub fn range_between(&self, other: &Self) -> Option<Range<usize>> {
         self.exclusive_with(other).then(|| {
             if self.end < other.start {
                 self.end.offset..other.start.offset
@@ -45,8 +47,14 @@ impl Position {
         })
     }
 
+    /// determines if this position does not overlap with another position
     pub fn exclusive_with(&self, other: &Self) -> bool {
         self.start > other.end || self.end < other.start
+    }
+
+    /// determines if the position contains the specified line number
+    pub fn contains_line(&self, line: usize) -> bool {
+        self.start.line <= line && self.end.line >= line
     }
 }
 

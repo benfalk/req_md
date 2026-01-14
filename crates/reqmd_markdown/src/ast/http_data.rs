@@ -73,7 +73,7 @@ impl HttpData {
                             .trim();
                         data.title = Some(title.into());
 
-                        if let Some(range) = position.between(&data.position) {
+                        if let Some(range) = position.range_between(&data.position) {
                             let desc = ctx.input[range].trim();
                             if !desc.is_empty() {
                                 data.description = Some(desc.into());

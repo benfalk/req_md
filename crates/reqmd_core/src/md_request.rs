@@ -12,5 +12,5 @@ pub struct MdRequest {
     pub title: Option<String>,
     pub description: Option<String>,
     pub request: http::Request,
-    pub original: Box<ast::HttpData>,
+    pub data: Box<ast::HttpData>,
 }

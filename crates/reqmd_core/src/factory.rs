@@ -1,4 +1,4 @@
-use crate::{Error, File, MdRequest};
+use crate::{Error, File, MdRequest, MdRequestList};
 use ::reqmd_http as http;
 use ::reqmd_markdown::ast;
 
@@ -10,7 +10,7 @@ use ::reqmd_markdown::ast;
 /// and [factory processors] you can customize how requests are built.
 ///
 /// [files]: File
-/// [default providers]: DefaultsProvider
+/// [default providers]: DefaultProvider
 /// [factory processors]: FactoryProcessor
 /// ---
 #[derive(Default)]
@@ -37,14 +37,18 @@ impl Factory {
     }
 
     /// Creates a list of `MdRequest` instances from the provided file
-    pub fn build_requests(&self, file: &File) -> Result<Vec<MdRequest>, Error> {
+    pub fn build_requests(&self, file: &File) -> Result<MdRequestList, Error> {
+        if file.document().requests.is_empty() {
+            return Ok(MdRequestList::default());
+        }
+
         let mut defaults = file.document().meta.http.clone();
         let mut requests = Vec::with_capacity(file.document().requests.len());
 
         for provider in &self.default_providers {
             provider
                 .apply_global_defaults(&mut defaults)
-                .map_err(|source| Error::DefaultProvicerError {
+                .map_err(|source| Error::DefaultProviderError {
                     provider: provider.name().to_string(),
                     source,
                 })?;
@@ -75,22 +79,25 @@ impl Factory {
                 request,
                 title: data.title.clone(),
                 description: data.description.clone(),
-                original: Box::new(data),
+                data: Box::new(data),
             });
         }
 
-        Ok(requests)
+        Ok(MdRequestList::new(requests))
     }
 }
 
 /// # Default Provider
 ///
-/// Provides a way to apply global HTTP defaults to **all** requests
+/// Provides a way to apply global [HTTP defaults] to **all** requests
 /// created by a [factory].  Any number of providers can be registered
 /// so take care to avoid conflicts between them in your factory setup.
 ///
-/// Note: a provider must own any state it requires which is why this
-/// trait requires `'static` lifetime.
+/// **Note:** a provider must own any state it requires which is why
+/// this trait requires `'static` lifetime.
+///
+/// [HTTP defaults]: ast::GlobalHttpDefaults
+/// [factory]: Factory
 ///
 /// ---
 pub trait DefaultProvider: 'static {
@@ -107,6 +114,9 @@ pub trait DefaultProvider: 'static {
 /// Processors are invoked for **each** request created from a [factory].
 /// They provide a way to customize or modify [requests] based on the
 /// [data] extracted from the [markdown AST].
+///
+/// **Note:** a processor must own any state it requires which is why
+/// this trait requires `'static` lifetime.
 ///
 /// [factory]: Factory
 /// [requests]: http::Request

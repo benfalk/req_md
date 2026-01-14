@@ -4,7 +4,7 @@ pub enum Error {
     AST(#[from] ::reqmd_markdown::Error),
 
     #[error("Error in Defaults Provider '{provider}': {source:?}")]
-    DefaultProvicerError {
+    DefaultProviderError {
         provider: String,
 
         #[source]
