@@ -72,7 +72,10 @@ mod trait_impls {
 
     impl Default for Path {
         fn default() -> Self {
-            Path(Url::parse("http://localhost/").expect("Failed to parse default PATH"))
+            Path(
+                Url::parse("http://localhost/")
+                    .expect("Failed to parse default PATH"),
+            )
         }
     }
 

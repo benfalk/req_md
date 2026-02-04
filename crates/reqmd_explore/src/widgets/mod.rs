@@ -27,8 +27,8 @@ mod prelude {
         style::{Color, Style, Stylize},
         text::{Line, Span},
         widgets::{
-            Block, BorderType, Borders, Cell, List, ListItem, ListState, Paragraph, Row,
-            StatefulWidget, Table, TableState, Widget, Wrap,
+            Block, BorderType, Borders, Cell, List, ListItem, ListState, Paragraph,
+            Row, StatefulWidget, Table, TableState, Widget, Wrap,
         },
     };
     pub(super) use ::reqmd_http as http;

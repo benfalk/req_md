@@ -4,7 +4,7 @@ pub enum Error {
     AST(#[from] ::reqmd_markdown::Error),
 
     #[error("Error in Defaults Provider '{provider}': {source:?}")]
-    DefaultProviderError {
+    DefaultProvider {
         provider: String,
 
         #[source]
@@ -18,4 +18,7 @@ pub enum Error {
         #[source]
         source: Box<dyn std::error::Error + Send + Sync>,
     },
+
+    #[error(transparent)]
+    Http(#[from] ::reqmd_http::Error),
 }

@@ -1,6 +1,8 @@
 use crate::MdRequest;
 
 #[derive(Debug, Clone, Default)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(transparent))]
 pub struct MdRequestList(Vec<MdRequest>);
 
 impl MdRequestList {

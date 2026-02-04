@@ -8,6 +8,7 @@ use ::reqmd_markdown::ast;
 /// ---
 #[derive(Debug, Clone)]
 #[non_exhaustive]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct MdRequest {
     pub title: Option<String>,
     pub description: Option<String>,

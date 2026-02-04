@@ -7,8 +7,8 @@ use ::reqmd_http as http;
 /// is normally populated from markdown frontmatter
 /// under the `http` key.
 ///
-#[derive(Debug, Clone, PartialEq, Eq, Default)]
-#[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
+#[derive(Debug, Clone, PartialEq, Eq, Default, ::serde::Deserialize)]
+#[cfg_attr(feature = "serde", derive(::serde::Serialize))]
 #[cfg_attr(feature = "serde", serde(default))]
 pub struct GlobalHttpDefaults {
     pub server: AddressString,

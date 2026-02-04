@@ -1,0 +1,17 @@
+[package]
+name = "reqmd_app"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bon.workspace = true
+thiserror.workspace = true
+
+reqmd_core = { path = "../reqmd_core", features = [
+  "yaml-as-json",
+  "http-client",
+] }
+reqmd_http = { path = "../reqmd_http" }
+
+[dev-dependencies]
+tokio.workspace = true

@@ -38,11 +38,12 @@ impl TryFrom<&ParseContext<'_>> for MetaData {
         });
 
         if let Some((position, yaml_str)) = maybe_yaml {
-            let data: Data =
-                ::serde_saphyr::from_str(yaml_str).map_err(|err| Error::InvalidYaml {
+            let data: Data = ::serde_saphyr::from_str(yaml_str).map_err(|err| {
+                Error::InvalidYaml {
                     input: yaml_str.to_owned(),
                     message: err.to_string(),
-                })?;
+                }
+            })?;
             Ok(Self {
                 title: data.title,
                 description: data.description,

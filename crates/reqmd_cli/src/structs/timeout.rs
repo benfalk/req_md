@@ -1,17 +1,5 @@
 use ::std::{str::FromStr, time::Duration};
 
-#[derive(::clap::Parser, Debug)]
-pub struct Opts {
-    /// file to read reaquests from,
-    /// if not provided stdin is used
-    file: Option<String>,
-
-    /// list all requests parsed from
-    /// input without running them
-    #[clap(long)]
-    pub list_requests: bool,
-}
-
 /// # Timeout Duration
 ///
 /// Signifies a duration for timeouts which clap

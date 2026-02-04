@@ -48,7 +48,7 @@ impl Factory {
         for provider in &self.default_providers {
             provider
                 .apply_global_defaults(&mut defaults)
-                .map_err(|source| Error::DefaultProviderError {
+                .map_err(|source| Error::DefaultProvider {
                     provider: provider.name().to_string(),
                     source,
                 })?;

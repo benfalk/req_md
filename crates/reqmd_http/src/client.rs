@@ -16,7 +16,10 @@ use crate::{error::Error, request::Request, response::Response};
 ///
 #[cfg_attr(any(test, feature = "mock"), ::mockall::automock)]
 pub trait Client {
-    fn send(&self, request: &Request) -> impl Future<Output = Result<Response, Error>> + Send;
+    fn send(
+        &self,
+        request: &Request,
+    ) -> impl Future<Output = Result<Response, Error>> + Send;
 }
 
 #[cfg(feature = "reqwest")]
@@ -84,7 +87,9 @@ mod reqwest_impl {
             } else {
                 String::from_utf8(bytes.to_vec())
                     .map(crate::response::ResponseBody::Text)
-                    .unwrap_or_else(|e| crate::response::ResponseBody::Binary(e.into_bytes()))
+                    .unwrap_or_else(|e| {
+                        crate::response::ResponseBody::Binary(e.into_bytes())
+                    })
             };
 
             Ok(Response::builder()

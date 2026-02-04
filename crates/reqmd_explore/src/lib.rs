@@ -26,12 +26,19 @@ impl App {
         }
     }
 
-    pub fn run(&mut self, terminal: &mut DefaultTerminal) -> Result<Option<&http::Request>> {
+    pub fn run(
+        &mut self,
+        terminal: &mut DefaultTerminal,
+    ) -> Result<Option<&http::Request>> {
         Explorer::new(&self.requests).next(&mut self.explorer_state);
         while !self.should_halt {
             terminal.draw(|frame| {
                 let explorer = Explorer::new(&self.requests);
-                frame.render_stateful_widget(&explorer, frame.area(), &mut self.explorer_state);
+                frame.render_stateful_widget(
+                    &explorer,
+                    frame.area(),
+                    &mut self.explorer_state,
+                );
             })?;
 
             if event::poll(Duration::from_millis(500))? {
@@ -49,7 +56,8 @@ impl App {
     fn process_event(&mut self, terminal_event: Event) {
         match terminal_event {
             Event::Key(key)
-                if key.kind.is_press() && (key.code.is_char('q') || key.code.is_esc()) =>
+                if key.kind.is_press()
+                    && (key.code.is_char('q') || key.code.is_esc()) =>
             {
                 self.explorer_state.unselect();
                 self.should_halt = true;

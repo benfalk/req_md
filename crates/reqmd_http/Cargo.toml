@@ -6,7 +6,7 @@ edition = "2024"
 [features]
 default = []
 serde = ["serde/derive", "url/serde"]
-reqwest = ["reqwest/blocking"]
+reqwest = ["dep:reqwest"]
 mock = ["mockall"]
 
 [dependencies]

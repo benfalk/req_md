@@ -58,25 +58,31 @@ impl StatefulWidget for BodyViewer<'_> {
                 paragraph.render(area, buf);
             }
             http::RequestBody::Binary(data) => {
-                let hex_view = data
-                    .chunks(16)
-                    .enumerate()
-                    .map(|(i, chunk)| {
-                        let hex_bytes: Vec<String> =
-                            chunk.iter().map(|b| format!("{:02X}", b)).collect();
-                        let ascii_bytes: String = chunk
-                            .iter()
-                            .map(|&b| if b.is_ascii_graphic() { b as char } else { '.' })
-                            .collect();
-                        format!(
-                            "{:08X}: {:<48}  {}",
-                            i * 16,
-                            hex_bytes.join(" "),
-                            ascii_bytes
-                        )
-                    })
-                    .collect::<Vec<String>>()
-                    .join("\n");
+                let hex_view =
+                    data.chunks(16)
+                        .enumerate()
+                        .map(|(i, chunk)| {
+                            let hex_bytes: Vec<String> =
+                                chunk.iter().map(|b| format!("{:02X}", b)).collect();
+                            let ascii_bytes: String = chunk
+                                .iter()
+                                .map(|&b| {
+                                    if b.is_ascii_graphic() {
+                                        b as char
+                                    } else {
+                                        '.'
+                                    }
+                                })
+                                .collect();
+                            format!(
+                                "{:08X}: {:<48}  {}",
+                                i * 16,
+                                hex_bytes.join(" "),
+                                ascii_bytes
+                            )
+                        })
+                        .collect::<Vec<String>>()
+                        .join("\n");
 
                 let paragraph = Paragraph::new(hex_view)
                     .style(Style::default().fg(Color::White))

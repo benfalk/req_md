@@ -21,8 +21,11 @@ impl StatefulWidget for &Explorer<'_> {
     type State = ExplorerState;
 
     fn render(self, area: Rect, buf: &mut Buffer, state: &mut Self::State) {
-        let [list_region, detail_region] =
-            Layout::vertical([Constraint::Percentage(25), Constraint::Percentage(75)]).areas(area);
+        let [list_region, detail_region] = Layout::vertical([
+            Constraint::Percentage(25),
+            Constraint::Percentage(75),
+        ])
+        .areas(area);
         let list = RequestList::new(self.items);
         if let Some(selected_request) = list.selected(&state.list_state) {
             let detail = RequestDetailBlock::new(selected_request);
@@ -43,7 +46,9 @@ impl<'a> Explorer<'a> {
         }
 
         match state.list_state.selected() {
-            Some(idx) if idx >= self.items.len() - 1 => state.list_state.select(Some(0)),
+            Some(idx) if idx >= self.items.len() - 1 => {
+                state.list_state.select(Some(0))
+            }
             Some(idx) => state.list_state.select(Some(idx + 1)),
             None => state.list_state.select(Some(0)),
         }

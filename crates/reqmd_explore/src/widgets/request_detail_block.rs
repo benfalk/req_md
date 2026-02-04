@@ -1,6 +1,7 @@
 use super::prelude::*;
 use crate::widgets::{
-    AddressDetailLine, BodyViewer, HeadersTable, QueryParamsTable, ResourceDetailLine,
+    AddressDetailLine, BodyViewer, HeadersTable, QueryParamsTable,
+    ResourceDetailLine,
 };
 
 /// # Request Detail Block
@@ -58,7 +59,8 @@ impl Widget for RequestDetailBlock<'_> {
         .flex(ratatui::layout::Flex::Start)
         .areas(details);
 
-        let mut view = ScrollView::new(Size::new(block_inner.width, block_inner.height));
+        let mut view =
+            ScrollView::new(Size::new(block_inner.width, block_inner.height));
         view.render_widget(AddressDetailLine::from(self.request), address_layout);
         view.render_widget(ResourceDetailLine::from(self.request), resource_layout);
         view.render_widget(params_table, query_params_layout);

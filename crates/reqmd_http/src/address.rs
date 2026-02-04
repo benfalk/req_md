@@ -65,8 +65,9 @@ impl Address {
     /// ```
     /// ---
     pub fn build_url(&self) -> Url {
-        let mut url = Url::parse(&format!("{}://{}", self.scheme.as_str(), self.host))
-            .expect("Failed to parse URL");
+        let mut url =
+            Url::parse(&format!("{}://{}", self.scheme.as_str(), self.host))
+                .expect("Failed to parse URL");
         url.set_port(self.port).expect("Failed to set port");
         url
     }

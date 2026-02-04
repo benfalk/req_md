@@ -6,7 +6,9 @@ pub fn post_widget_md() -> &'static str {
 }
 
 #[rstest::fixture]
-pub fn post_widget_parse_context(post_widget_md: &'static str) -> ParseContext<'static> {
+pub fn post_widget_parse_context(
+    post_widget_md: &'static str,
+) -> ParseContext<'static> {
     ParseContext::build(post_widget_md).unwrap()
 }
 

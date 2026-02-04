@@ -1,0 +1,28 @@
+[package]
+name = "reqmd_cli"
+version = "0.3.0"
+authors = ["Benjamin Falk <benjamin.falk@yahoo.com>"]
+edition = "2024"
+
+[[bin]]
+name = "reqmd"
+path = "src/bin/reqmd.rs"
+
+[dependencies]
+dotenvy.workspace = true
+reqwest.workspace = true
+tokio.workspace = true
+clap.workspace = true
+anyhow.workspace = true
+serde_json.workspace = true
+serde.workspace = true
+
+
+reqmd_core = { path = "../reqmd_core", features = [
+  "serde",
+  "yaml-as-json",
+  "http-client",
+] }
+reqmd_app = { path = "../reqmd_app" }
+reqmd_http = { path = "../reqmd_http", features = ["serde"] }
+reqmd_markdown = { path = "../reqmd_markdown", features = ["serde"] }
