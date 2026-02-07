@@ -1,5 +1,4 @@
-use super::{BodyData, Position};
-use crate::{Error, parsing::ParseContext};
+use crate::{BodyData, Error, Position, parsing::ParseContext};
 use ::markdown::mdast::{self, Node};
 use ::reqmd_http as http;
 
@@ -105,7 +104,7 @@ mod parser;
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::ast::Point;
+    use crate::Point;
     use crate::support::fixtures::post_widget_parse_context as ctx;
 
     #[rstest::rstest]

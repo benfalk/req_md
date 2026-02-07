@@ -20,7 +20,7 @@ pub enum Error {
     #[error("Unable to read position offset: {position:?}")]
     InvalidOffset {
         data: Box<str>,
-        position: Box<crate::ast::Position>,
+        position: Box<crate::Position>,
     },
 }
 

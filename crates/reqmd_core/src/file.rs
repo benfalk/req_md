@@ -1,4 +1,4 @@
-use ::reqmd_markdown::ast;
+use ::reqmd_ast as ast;
 use ::std::path::PathBuf;
 
 #[derive(Debug, Clone, Default)]
@@ -36,9 +36,9 @@ impl File {
     pub fn load(
         source: impl Into<String>,
         path: Option<PathBuf>,
-    ) -> Result<Self, ::reqmd_markdown::Error> {
+    ) -> Result<Self, ::reqmd_ast::Error> {
         let source = source.into();
-        let ast = ::reqmd_markdown::parse_markdown(&source)?;
+        let ast = ::reqmd_ast::parse_markdown(&source)?;
         Ok(Self { path, source, ast })
     }
 

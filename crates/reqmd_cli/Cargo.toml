@@ -25,4 +25,4 @@ reqmd_core = { path = "../reqmd_core", features = [
 ] }
 reqmd_app = { path = "../reqmd_app" }
 reqmd_http = { path = "../reqmd_http", features = ["serde"] }
-reqmd_markdown = { path = "../reqmd_markdown", features = ["serde"] }
+reqmd_ast = { path = "../reqmd_ast", features = ["serde"] }

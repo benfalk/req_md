@@ -1,6 +1,6 @@
+use reqmd_ast as ast;
 use reqmd_core as core;
 use reqmd_http as http;
-use reqmd_markdown::ast;
 use serde::ser::SerializeSeq;
 
 /// # Serialized List

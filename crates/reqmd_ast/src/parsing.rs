@@ -1,5 +1,4 @@
-use crate::Error;
-use crate::ast::Document;
+use crate::{Document, Error};
 use ::markdown::{Constructs, ParseOptions, mdast};
 
 /// Parse Markdown Document
@@ -43,8 +42,8 @@ impl<'a> ParseContext<'a> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::ast::{Point, Position};
     use crate::support::fixtures::*;
+    use crate::{Point, Position};
     use ::reqmd_http as http;
 
     #[rstest::rstest]

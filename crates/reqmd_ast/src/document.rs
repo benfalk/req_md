@@ -1,5 +1,4 @@
-use super::{HttpData, MetaData, Position};
-use crate::{Error, parsing::ParseContext};
+use crate::{Error, HttpData, MetaData, Position, parsing::ParseContext};
 
 /// # Markdown Document AST
 ///
@@ -31,7 +30,7 @@ impl TryFrom<&ParseContext<'_>> for Document {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::ast::Point;
+    use crate::Point;
     use crate::support::fixtures::post_widget_parse_context as ctx;
     use ::reqmd_http as http;
 

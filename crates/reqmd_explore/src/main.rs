@@ -1,8 +1,8 @@
 use ::clap::Parser;
 use ::color_eyre::Result;
+use ::reqmd_ast as ast;
 use ::reqmd_explore::App;
 use ::reqmd_http::Client as _;
-use ::reqmd_markdown as markdown;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -26,7 +26,7 @@ struct Opts {
 }
 
 impl Opts {
-    fn input(&self) -> Result<markdown::ast::Document> {
+    fn input(&self) -> Result<ast::Document> {
         use std::io::Read;
 
         let data = match &self.file {
@@ -38,6 +38,6 @@ impl Opts {
             }
         };
 
-        Ok(markdown::parse_markdown(&data)?)
+        Ok(::reqmd_ast::parse_markdown(&data)?)
     }
 }

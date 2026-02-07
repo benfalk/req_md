@@ -1,6 +1,6 @@
 use crate::FactoryProcessor;
+use ::reqmd_ast as ast;
 use ::reqmd_http as http;
-use ::reqmd_markdown::ast;
 use ::serde_json::Value as JsonValue;
 
 /// # Yaml as JSON Processor

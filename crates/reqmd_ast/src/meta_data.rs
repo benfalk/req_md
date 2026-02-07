@@ -1,5 +1,4 @@
-use super::{GlobalHttpDefaults, Position};
-use crate::{Error, parsing::ParseContext};
+use crate::{Error, GlobalHttpDefaults, Position, parsing::ParseContext};
 use ::markdown::mdast;
 
 /// # Meta Data AST
@@ -59,7 +58,7 @@ impl TryFrom<&ParseContext<'_>> for MetaData {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::ast::Point;
+    use crate::Point;
     use crate::support::fixtures::post_widget_parse_context as ctx;
 
     #[rstest::rstest]

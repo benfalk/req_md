@@ -6,7 +6,7 @@ members = [
   "crates/reqmd_core",
   "crates/reqmd_explore",
   "crates/reqmd_http",
-  "crates/reqmd_markdown",
+  "crates/reqmd_ast",
 ]
 
 [workspace.dependencies]

@@ -1,7 +1,7 @@
 #[derive(Debug, ::thiserror::Error)]
 pub enum Error {
     #[error(transparent)]
-    AST(#[from] ::reqmd_markdown::Error),
+    AST(#[from] ::reqmd_ast::Error),
 
     #[error("Error in Defaults Provider '{provider}': {source:?}")]
     DefaultProvider {

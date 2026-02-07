@@ -1,5 +1,5 @@
 use crate::DefaultProvider;
-use ::reqmd_markdown::ast;
+use ::reqmd_ast as ast;
 use ::std::{borrow::Cow, str::FromStr};
 
 /// # Environment Variable Provider
@@ -13,7 +13,7 @@ use ::std::{borrow::Cow, str::FromStr};
 ///
 /// ```rust
 /// # use ::reqmd_core::builtin_providers::EnvProvider;
-/// # use ::reqmd_markdown::ast::GlobalHttpDefaults;
+/// # use ::reqmd_ast::GlobalHttpDefaults;
 /// # use ::reqmd_core::DefaultProvider;
 ///
 /// unsafe {

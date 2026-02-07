@@ -2083,6 +2083,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "reqmd_ast"
+version = "0.1.0"
+dependencies = [
+ "bon",
+ "markdown",
+ "nom 8.0.0",
+ "reqmd_http",
+ "rstest",
+ "serde",
+ "serde-saphyr",
+ "serde_json",
+ "thiserror 2.0.17",
+ "url",
+]
+
+[[package]]
 name = "reqmd_cli"
 version = "0.3.0"
 dependencies = [
@@ -2090,9 +2106,9 @@ dependencies = [
  "clap",
  "dotenvy",
  "reqmd_app",
+ "reqmd_ast",
  "reqmd_core",
  "reqmd_http",
- "reqmd_markdown",
  "reqwest",
  "serde",
  "serde_json",
@@ -2104,8 +2120,8 @@ name = "reqmd_core"
 version = "0.1.0"
 dependencies = [
  "bon",
+ "reqmd_ast",
  "reqmd_http",
- "reqmd_markdown",
  "reqwest",
  "rstest",
  "serde",
@@ -2123,9 +2139,9 @@ dependencies = [
  "color-eyre",
  "crossterm",
  "ratatui",
+ "reqmd_ast",
  "reqmd_core",
  "reqmd_http",
- "reqmd_markdown",
  "reqwest",
  "rstest",
  "tokio",
@@ -2144,22 +2160,6 @@ dependencies = [
  "serde_json",
  "thiserror 2.0.17",
  "tokio",
- "url",
-]
-
-[[package]]
-name = "reqmd_markdown"
-version = "0.1.0"
-dependencies = [
- "bon",
- "markdown",
- "nom 8.0.0",
- "reqmd_http",
- "rstest",
- "serde",
- "serde-saphyr",
- "serde_json",
- "thiserror 2.0.17",
  "url",
 ]
 

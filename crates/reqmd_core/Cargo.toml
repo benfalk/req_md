@@ -12,7 +12,7 @@ http-client = ["reqmd_http/reqwest", "reqwest"]
 [dependencies]
 bon.workspace = true
 reqmd_http = { path = "../reqmd_http" }
-reqmd_markdown = { path = "../reqmd_markdown" }
+reqmd_ast = { path = "../reqmd_ast" }
 thiserror.workspace = true
 url.workspace = true
 

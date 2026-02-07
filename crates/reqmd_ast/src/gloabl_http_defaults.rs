@@ -20,7 +20,7 @@ impl GlobalHttpDefaults {
     /// create a [request factory] from the global defaults
     ///
     /// ```rust
-    /// # use reqmd_markdown::ast::GlobalHttpDefaults;
+    /// # use reqmd_ast::GlobalHttpDefaults;
     /// use ::reqmd_http as http;
     ///
     /// let defaults = GlobalHttpDefaults {

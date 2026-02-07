@@ -1,6 +1,6 @@
 use crate::{Error, File, MdRequest, MdRequestList};
+use ::reqmd_ast as ast;
 use ::reqmd_http as http;
-use ::reqmd_markdown::ast;
 
 /// # ReqMD Request Factory
 ///

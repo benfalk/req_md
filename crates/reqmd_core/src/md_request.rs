@@ -1,5 +1,5 @@
+use ::reqmd_ast as ast;
 use ::reqmd_http as http;
-use ::reqmd_markdown::ast;
 
 /// # Markdown Request
 ///

@@ -3,11 +3,11 @@
 //!
 
 use crate::widgets::{Explorer, ExplorerState};
-use ::color_eyre::Result;
-use ::crossterm::event::{self, Event};
-use ::ratatui::DefaultTerminal;
-use ::reqmd_http as http;
-use ::reqmd_markdown as markdown;
+use color_eyre::Result;
+use crossterm::event::{self, Event};
+use ratatui::DefaultTerminal;
+use reqmd_ast as ast;
+use reqmd_http as http;
 use std::time::Duration;
 
 #[derive(Default, Debug)]
@@ -82,8 +82,8 @@ impl App {
     }
 }
 
-impl From<markdown::ast::Document> for App {
-    fn from(doc: markdown::ast::Document) -> Self {
+impl From<ast::Document> for App {
+    fn from(doc: ast::Document) -> Self {
         let factory = doc.meta.http.factory();
         let requests = doc
             .requests
