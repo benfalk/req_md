@@ -3,14 +3,16 @@ name = "reqmd_app"
 version = "0.1.0"
 edition = "2024"
 
+[features]
+default = ["builtin-providers-and-processors", "serde"]
+serde = ["reqmd_core/serde", "reqmd_http/serde"]
+builtin-providers-and-processors = ["reqmd_core/yaml-as-json"]
+
 [dependencies]
 bon.workspace = true
 thiserror.workspace = true
 
-reqmd_core = { path = "../reqmd_core", features = [
-  "yaml-as-json",
-  "http-client",
-] }
+reqmd_core = { path = "../reqmd_core", features = ["http-client"] }
 reqmd_http = { path = "../reqmd_http" }
 
 [dev-dependencies]

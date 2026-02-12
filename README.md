@@ -1,15 +1,9 @@
-# Request MD
+# Request Markdown
 
-This originally was a project that converted Markdown files to HTTP
-requests, but has since evolved into a more comprehensive tool for
-managing, creating, and executing HTTP requests using the markdown
-syntax.
-
-The original project can be found at `crates/req_md` for now while
-the rest of the project is being developed.
-
-> [!WARNING]
-> 🚧 This is under construction 🚧
+This is a project focused on representing a human readable markdown
+format which describes HTTP requests. The goal is to be able to create
+markdown documents using this specification and leverage this tooling
+to identify and send them as valid HTTP requests.
 
 ## Development Goals
 

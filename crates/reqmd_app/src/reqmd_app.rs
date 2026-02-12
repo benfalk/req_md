@@ -18,13 +18,13 @@ use ::std::{sync::Arc, time::Duration};
 /// # use ::reqmd_app::ReqmdApp;
 /// # #[tokio::main]
 /// # async fn main() -> Result<(), ::reqmd_app::Error> {
-/// use ::reqmd_core::{builtin_providers, builtin_processors};
-/// use ::reqmd_app::commands::ParseRequests;
+/// use ::reqmd_app::{providers, processors, commands::ParseRequests};
 ///
 /// let req_md = ReqmdApp::builder()
 ///     .http_timeout(::std::time::Duration::from_secs(10))
-///     .provider(builtin_providers::EnvProvider::default())
-///     .processor(builtin_processors::EnvVarExpansion::default())
+///     .provider(providers::EnvProvider::default())
+///     .processor(processors::EnvVarExpansion::default())
+///     .processor(processors::YamlAsJson::default())
 ///     .build();
 ///
 /// let list = req_md.run(ParseRequests { markdown: "" }).await?;
