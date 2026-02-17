@@ -1,6 +1,5 @@
 use ::anyhow::{Context as _, Result};
-use ::reqmd_app::{ReqmdApp, commands};
-use ::reqmd_core::{MdRequest, MdRequestList};
+use ::reqmd_app::{MdRequest, MdRequestList, ReqmdApp, commands};
 use ::std::{borrow::Cow, path::PathBuf};
 
 mod structs;
@@ -54,6 +53,19 @@ pub async fn dump_ast(file: &PathBuf, app: &ReqmdApp) -> Result<()> {
 }
 
 /// # Send Request
+///
+/// Attempts to send the request specified by the [target] to the
+/// server.  The duration specified by the timeout is used to limit
+/// how long the request is allowed to run before it is cancelled.
+/// If the request is successful, the response is printed to stdout
+/// provided the response body is valid UTF-8.
+///
+/// **Note**: If the response body is not valid UTF-8, a message is
+/// sent to stdout indicating that a binary response was received
+/// but this function does not fail.
+///
+/// [target]: Target
+/// ---
 pub async fn send_request(
     target: &Target,
     timeout: &TimeoutDuration,

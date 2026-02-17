@@ -12,7 +12,7 @@ crates/
   |- reqmd_ast/
   |- reqmd_cli/
   |- reqmd_core/
-  |- reqmd_explore/
+  |- reqmd_tui/
   |- reqmd_http/
 ```
 
@@ -41,7 +41,7 @@ crates/
   Defines a set of domain level structures and a factory building interfaces
   to extend the creation of these structures.
 
-- `reqmd_explore`
+- `reqmd_tui`
 
   Experimental library and TUI binary for working with ReqMd markdown files.
 

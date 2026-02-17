@@ -40,7 +40,7 @@ use ::url::Url;
 /// [method]: Method
 /// [path]: Path
 /// [query string]: QueryString
-/// [body]: Body
+/// [body]: RequestBody
 /// ---
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]

@@ -1,8 +1,8 @@
 use ::clap::Parser;
 use ::color_eyre::Result;
 use ::reqmd_ast as ast;
-use ::reqmd_explore::App;
 use ::reqmd_http::Client as _;
+use ::reqmd_tui::App;
 
 #[tokio::main]
 async fn main() -> Result<()> {

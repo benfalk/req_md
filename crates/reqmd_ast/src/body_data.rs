@@ -36,3 +36,45 @@ impl From<Code> for BodyData {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use ::googletest::prelude::*;
+    use ::markdown::unist::{Point as MarkdownPoint, Position as MarkdownPosition};
+
+    #[rstest::fixture]
+    fn code_block() -> Code {
+        Code {
+            value: "body content".to_string(),
+            lang: Some("json".to_string()),
+            meta: Some("meta info".to_string()),
+            position: Some(MarkdownPosition {
+                start: MarkdownPoint {
+                    line: 1,
+                    column: 1,
+                    offset: 0,
+                },
+                end: MarkdownPoint {
+                    line: 3,
+                    column: 1,
+                    offset: 20,
+                },
+            }),
+        }
+    }
+
+    #[rstest::rstest]
+    #[googletest::gtest]
+    fn code_block_converstion(code_block: Code) {
+        let data = BodyData::from(code_block);
+        let pos = data.position.as_ref().expect("a position");
+        assert_that!(data.lang.as_deref(), eq(Some("json")));
+        assert_that!(pos.start.line, eq(1));
+        assert_that!(pos.start.column, eq(1));
+        assert_that!(pos.start.offset, eq(0));
+        assert_that!(pos.end.line, eq(3));
+        assert_that!(pos.end.column, eq(1));
+        assert_that!(pos.end.offset, eq(20));
+    }
+}

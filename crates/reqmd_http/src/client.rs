@@ -12,7 +12,7 @@ use crate::{error::Error, request::Request, response::Response};
 ///
 /// Also, the `Client` trait is designed to be mockable for testing
 /// purposes.  If you enable the `mock` feature, it will provide a
-/// [mockall] implementation that can be used in tests.
+/// mockall implementation that can be used in tests.
 ///
 #[cfg_attr(any(test, feature = "mock"), ::mockall::automock)]
 pub trait Client {

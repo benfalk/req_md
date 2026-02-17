@@ -30,12 +30,6 @@ impl From<::markdown::message::Message> for Error {
     }
 }
 
-impl From<::serde_json::Error> for Error {
-    fn from(value: ::serde_json::Error) -> Self {
-        Error::Parse(value.to_string())
-    }
-}
-
 impl From<::serde_saphyr::Error> for Error {
     fn from(value: ::serde_saphyr::Error) -> Self {
         Error::Parse(value.to_string())

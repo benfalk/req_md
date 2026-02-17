@@ -1,0 +1,30 @@
+[package]
+name = "reqmd_tui"
+version = "0.1.0"
+edition = "2024"
+authors = ["Benjamin Falk <benjamin.falk@yahoo.com>"]
+description = "TUI tool for reqmd"
+keywords = ["makdown", "http"]
+license = "MIT"
+
+[dependencies]
+clap = { workspace = true, features = ["derive"] }
+color-eyre = { workspace = true }
+crossterm = { workspace = true }
+ratatui = { workspace = true }
+reqwest = { workspace = true }
+tokio = { workspace = true }
+tui-scrollview = { workspace = true }
+
+reqmd_http = { version = "0.1.0", path = "../reqmd_http", features = [
+  "serde",
+  "reqwest",
+] }
+reqmd_ast = { version = "0.1.0", path = "../reqmd_ast", features = ["serde"] }
+reqmd_core = { version = "0.1.0", path = "../reqmd_core", features = [
+  "serde",
+  "yaml-as-json",
+] }
+
+[dev-dependencies]
+rstest = { workspace = true }

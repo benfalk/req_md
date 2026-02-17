@@ -5,10 +5,11 @@ use ::markdown::mdast;
 ///
 /// This is information is extracted from the [FrontMatter]
 /// of a markdown document.  The `http` key if present is
-/// directly derserialized as [HttpDefaults].
+/// directly derserialized as [global defaults].
 ///
 /// [FrontMatter]: mdast::Node::Yaml
-///
+/// [global defaults]: crate::GlobalHttpDefaults
+/// ---
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 #[cfg_attr(feature = "serde", derive(::serde::Serialize, ::serde::Deserialize))]
 #[cfg_attr(feature = "serde", serde(default))]

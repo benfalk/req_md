@@ -17,7 +17,8 @@ impl ResponseBody {
     pub fn text(&self) -> Option<&str> {
         match self {
             ResponseBody::Text(text) => Some(text.as_str()),
-            _ => None,
+            ResponseBody::None => Some(""),
+            ResponseBody::Binary(_) => None,
         }
     }
 

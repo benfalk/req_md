@@ -565,9 +565,9 @@ where
 
     /// builds the request or target type
     ///
-    /// The target type must implement [From<Request>]
+    /// The target type must implement `From<Request>`
     /// and is normally just [Request] itself.  It is
-    /// also use by [factories] to build directly
+    /// also used by [factories] to build directly
     ///
     /// [factories]: Request::factory
     /// ---

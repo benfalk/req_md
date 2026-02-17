@@ -2,18 +2,23 @@
 name = "reqmd_app"
 version = "0.1.0"
 edition = "2024"
+authors = ["Ben Falk <benjamin.falk@yahoo.com>"]
+description = "application library interface for reqmd"
+keywords = ["makdown", "http"]
+license = "MIT"
 
 [features]
 default = ["builtin-providers-and-processors", "serde"]
-serde = ["reqmd_core/serde", "reqmd_http/serde"]
+serde = ["reqmd_core/serde"]
 builtin-providers-and-processors = ["reqmd_core/yaml-as-json"]
 
 [dependencies]
 bon.workspace = true
 thiserror.workspace = true
 
-reqmd_core = { path = "../reqmd_core", features = ["http-client"] }
-reqmd_http = { path = "../reqmd_http" }
+reqmd_core = { version = "0.1.0", path = "../reqmd_core", features = [
+  "http-client",
+] }
 
 [dev-dependencies]
 tokio.workspace = true

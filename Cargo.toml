@@ -2,11 +2,11 @@
 resolver = "3"
 members = [
   "crates/reqmd_app",
+  "crates/reqmd_ast",
   "crates/reqmd_cli",
   "crates/reqmd_core",
-  "crates/reqmd_explore",
   "crates/reqmd_http",
-  "crates/reqmd_ast",
+  "crates/reqmd_tui",
 ]
 
 [workspace.dependencies]
@@ -39,3 +39,4 @@ url = "2.5.0"
 #
 rstest = "0.26.0"
 mockall = "0.14.0"
+googletest = "0.14"

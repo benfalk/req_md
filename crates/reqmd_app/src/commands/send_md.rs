@@ -1,6 +1,5 @@
 use crate::{Error, command::Command, env::Env};
-use ::reqmd_core::MdRequest;
-use ::reqmd_http::Response;
+use ::reqmd_core::{MdRequest, http::Response};
 
 /// # Send MD Request Command
 ///
@@ -11,7 +10,7 @@ use ::reqmd_http::Response;
 /// on the caller to interpret the response as needed.
 ///
 /// [markdown request]: ::reqmd_core::MdRequest
-/// [response]: ::reqmd_http::Response
+/// [response]: Response
 /// ---
 #[derive(Clone, Debug)]
 pub struct SendMd<'a> {

@@ -12,6 +12,7 @@ pub use md_request_list::MdRequestList;
 
 pub mod builtin_processors;
 pub mod builtin_providers;
+pub use ::reqmd_http as http;
 
 mod error;
 mod factory;

@@ -1,5 +1,4 @@
-use ::reqmd_core as core;
-use ::reqmd_http as http;
+use ::reqmd_core::{self as core, http};
 
 pub struct Environment {
     factory: core::Factory,

@@ -2,6 +2,10 @@
 name = "reqmd_http"
 version = "0.1.0"
 edition = "2024"
+authors = ["Ben Falk <benjamin.falk@yahoo.com>"]
+description = "http library interface for reqmd"
+keywords = ["makdown", "http"]
+license = "MIT"
 
 [features]
 default = []

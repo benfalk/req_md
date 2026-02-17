@@ -2,6 +2,10 @@
 name = "reqmd_ast"
 version = "0.1.0"
 edition = "2024"
+authors = ["Ben Falk <benjamin.falk@yahoo.com>"]
+description = "ast library interface for reqmd"
+keywords = ["makdown", "http"]
+license = "MIT"
 
 [features]
 default = []
@@ -11,12 +15,13 @@ serde = ["serde/derive", "reqmd_http/serde", "url/serde"]
 bon.workspace = true
 markdown.workspace = true
 nom.workspace = true
-reqmd_http = { path = "../reqmd_http" }
+reqmd_http = { version = "0.1.0", path = "../reqmd_http" }
 serde.workspace = true
 serde-saphyr.workspace = true
-serde_json.workspace = true
 thiserror.workspace = true
 url.workspace = true
 
 [dev-dependencies]
 rstest.workspace = true
+serde_json.workspace = true
+googletest.workspace = true

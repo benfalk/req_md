@@ -1,4 +1,4 @@
-use ::reqmd_core::{MdRequest, MdRequestList};
+use ::reqmd_app::{MdRequest, MdRequestList};
 use ::std::{num::NonZeroUsize, path::PathBuf, str::FromStr};
 
 /// Describes a [selection] in a markdown file should be
@@ -43,6 +43,7 @@ pub struct Target {
 /// This can be a line number, an ordinal number, or the first
 /// or last request in the file.
 ///
+/// [request]: MdRequest
 /// ---
 #[derive(Debug, Clone, Copy)]
 pub enum Selection {
