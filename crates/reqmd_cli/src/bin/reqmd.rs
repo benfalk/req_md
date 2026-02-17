@@ -1,55 +1,65 @@
-use ::anyhow::{Context as _, Result};
-use ::clap::Parser;
-use ::reqmd_app::{ReqmdApp, commands};
-use ::reqmd_core::{builtin_processors, builtin_providers};
-
-use reqmd_cli::structs::{Options, SerializedList};
+use ::clap::{Parser, Subcommand};
+use ::reqmd_app::{ReqmdApp, processors, providers};
+use ::reqmd_cli::{Target, TimeoutDuration};
+use ::std::path::PathBuf;
 
 #[tokio::main]
-async fn main() -> Result<()> {
+async fn main() -> ::anyhow::Result<()> {
     ::dotenvy::dotenv().ok();
-
-    let options = Options::parse();
-    let markdown = options.markdown().context("looking for markdown input")?;
+    let args = Cli::parse();
     let reqmd = ReqmdApp::builder()
-        .maybe_http_timeout(options.timeout_duration())
-        .provider(builtin_providers::EnvProvider::default())
-        .processor(builtin_processors::EnvVarExpansion::default())
-        .processor(builtin_processors::YamlAsJson::default())
+        .provider(providers::EnvProvider::default())
+        .processor(processors::EnvVarExpansion::default())
+        .processor(processors::YamlAsJson::default())
         .build();
 
-    let requests = reqmd
-        .run(commands::ParseRequests { markdown })
-        .await
-        .context("parsing markdown input")?;
-
-    if options.list_requests() {
-        let json = ::serde_json::to_string_pretty(&SerializedList(&requests))
-            .context("converting requests to json")?;
-        println!("{json}");
-        return Ok(());
-    }
-
-    let request = if let Some(line_num) = options.file_line()? {
-        requests
-            .at_line(line_num)
-            .with_context(|| format!("could not find request at line {line_num}"))?
-    } else {
-        requests
-            .first()
-            .context("could not find any requests in markdown")?
-    };
-
-    let response = reqmd
-        .run(commands::SendMd { request })
-        .await
-        .context("sending request failed")?;
-
-    if let Some(text) = response.body.text() {
-        print!("{text}");
-    } else {
-        eprintln!("body is not plain text printable");
+    match args.command {
+        Command::List { file } => ::reqmd_cli::list_requests(&file, &reqmd).await?,
+        Command::Dump { file } => ::reqmd_cli::dump_ast(&file, &reqmd).await?,
+        Command::Send { target, timeout } => {
+            ::reqmd_cli::send_request(&target, &timeout, &reqmd).await?
+        }
     }
 
     Ok(())
+}
+
+#[derive(Debug, Parser, Clone)]
+#[command(author = "Ben Falk <github.com/benfalk>")]
+#[command(about = "Tool for sending HTTP requests defined in markdown files")]
+#[command(version)]
+struct Cli {
+    #[command(subcommand)]
+    command: Command,
+}
+
+#[derive(Debug, Subcommand, Clone)]
+enum Command {
+    /// Lists all of the requests found in order
+    List {
+        /// File to list requests from
+        file: PathBuf,
+    },
+    /// Sends request from file to server
+    Send {
+        ///  Examples:
+        ///
+        ///  sample.md:first    ( sends the first request )
+        ///
+        ///  sample.md:last     ( sends last request )
+        ///
+        ///  sample.md:3        ( sends third request )
+        ///
+        ///  sample.md:line10   ( sends request found at line 10 )
+        target: Target,
+
+        /// examples are 50ms, 3sec, 5min, none
+        #[clap(short, long, default_value = "none")]
+        timeout: TimeoutDuration,
+    },
+    /// Outputs JSON representation of parsed requests
+    Dump {
+        /// File to dump AST of into json
+        file: PathBuf,
+    },
 }

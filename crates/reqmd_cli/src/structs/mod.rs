@@ -1,7 +1,5 @@
-pub use options::Options;
-pub use serialized_list::SerializedList;
+pub use selection::{Selection, Target};
 pub use timeout::TimeoutDuration;
 
-mod options;
-mod serialized_list;
+mod selection;
 mod timeout;
