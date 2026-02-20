@@ -1,11 +1,18 @@
 [package]
 name = "reqmd_cli"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 authors = ["Benjamin Falk <benjamin.falk@yahoo.com>"]
 description = "CLI tool for reqmd"
-keywords = ["makdown", "http"]
+keywords = ["markdown", "http"]
 license = "MIT"
+repository = "https://github.com/benfalk/req_md"
+
+[package.metadata.wix]
+upgrade-guid = "AF807B2B-A28C-4D09-8BD3-230F0D8E637F"
+path-guid = "69E5661A-1038-49CD-85FF-D6FA8C37306D"
+license = false
+eula = false
 
 [[bin]]
 name = "reqmd"

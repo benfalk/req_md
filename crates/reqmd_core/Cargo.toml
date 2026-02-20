@@ -1,11 +1,12 @@
 [package]
 name = "reqmd_core"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 authors = ["Ben Falk <benjamin.falk@yahoo.com>"]
 description = "library interface for all reqmd domain code"
-keywords = ["makdown", "http"]
+keywords = ["markdown", "http"]
 license = "MIT"
+repository = "https://github.com/benfalk/req_md"
 
 [features]
 default = []
