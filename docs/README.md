@@ -1,4 +1,6 @@
-# Index
+# 📒 ReqMd
+
+![Readable. Executable. Simple.](./assets/mast-head.svg)
 
 Welcome to the `ReqMd` documentation! These docs are aimed at explaining the
 format specification, tools available, and structure of the codebase. The menu
@@ -8,7 +10,7 @@ the discussions] on Github with your question.
 
 [post in the discussions]: https://github.com/benfalk/req_md/discussions/categories/q-a
 
-## Inspiration
+## 🎇 Inspiration
 
 While pair-programming in 2019 a colleague demonstrated [this fantastic VS Code
 plugin] which parsed HTTP requests in a special file format. These requests could

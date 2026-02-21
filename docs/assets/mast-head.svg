@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 1400 450"
+   height="450"
+   width="1400"
+   version="1.1"
+   id="svg119"
+   sodipodi:docname="diagram.svg"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview121"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="0.82964286"
+     inkscape:cx="506.24193"
+     inkscape:cy="355.57469"
+     inkscape:window-width="2560"
+     inkscape:window-height="1371"
+     inkscape:window-x="0"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg119" />
+  <defs
+     id="defs96">
+    <linearGradient
+       y2="100%"
+       x2="100%"
+       y1="0%"
+       x1="0%"
+       id="bg">
+      <stop
+         stop-color="#091833"
+         offset="0%"
+         id="stop82" />
+      <stop
+         stop-color="#0a0a0f"
+         offset="100%"
+         id="stop84" />
+    </linearGradient>
+    <filter
+       height="1.3722226"
+       width="1.0522626"
+       y="-0.18611132"
+       x="-0.026131282"
+       id="glow">
+      <feGaussianBlur
+         result="coloredBlur"
+         stdDeviation="5"
+         id="feGaussianBlur87" />
+      <feMerge
+         id="feMerge93">
+        <feMergeNode
+           in="coloredBlur"
+           id="feMergeNode89" />
+        <feMergeNode
+           in="SourceGraphic"
+           id="feMergeNode91" />
+      </feMerge>
+    </filter>
+  </defs>
+  <rect
+     fill="url(#bg)"
+     height="450"
+     width="1400"
+     id="rect98" />
+  <g
+     opacity="0.15"
+     id="g105">
+    <pattern
+       patternUnits="userSpaceOnUse"
+       height="80"
+       width="80"
+       id="grid">
+      <path
+         stroke-width="1"
+         stroke="#0abdc6"
+         fill="none"
+         d="M 80 0 L 0 0 0 80"
+         id="path100" />
+    </pattern>
+    <rect
+       fill="url(#grid)"
+       height="450"
+       width="1400"
+       id="rect103" />
+  </g>
+  <text
+     filter="url(#glow)"
+     text-anchor="middle"
+     fill="#00f0ff"
+     font-weight="bold"
+     font-size="85px"
+     font-family="monospace, 'Courier New', monospace"
+     y="180"
+     x="700"
+     id="text107"
+     transform="matrix(1.323,0,0,1.323,-224.63829,-101.79411)">HTTP Requests in</text>
+  <text
+     letter-spacing="2"
+     filter="url(#glow)"
+     text-anchor="middle"
+     fill="#ea00d9"
+     font-weight="bold"
+     font-size="95px"
+     font-family="monospace, 'Courier New', monospace"
+     y="280"
+     x="700"
+     id="text109"
+     transform="matrix(1.323,0,0,1.323,-224.63829,-101.79411)">MARKDOWN</text>
+  <text
+     opacity="0.9"
+     text-anchor="middle"
+     fill="#bd00ff"
+     font-size="55.1354px"
+     font-family="monospace, 'Courier New', monospace"
+     y="351.43265"
+     x="724.75079"
+     id="text111"
+     style="stroke-width:1.53154">Readable. Executable. Simple.</text>
+  <line
+     opacity="0.4"
+     stroke-width="3.969"
+     stroke="#ff007f"
+     y2="30.505894"
+     x2="1362.9615"
+     y1="30.505894"
+     x1="39.961727"
+     id="line113" />
+  <line
+     opacity="0.5"
+     stroke-width="3.06308"
+     stroke="#00ffd1"
+     y2="374.02536"
+     x2="1329.7211"
+     y1="374.02536"
+     x1="104.491"
+     id="line115" />
+  <text
+     opacity="0.7"
+     fill="#0abdc6"
+     font-size="23.814px"
+     font-family="monospace"
+     y="417.6882"
+     x="342.89545"
+     id="text117"
+     style="font-size:27.5676px;font-family:monospace;opacity:0.7;fill:#0abdc6;stroke-width:1.53154"><tspan
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:27.5676px;font-family:monospace;-inkscape-font-specification:'monospace, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:1.53154"
+       id="tspan55537">&gt; reqmd send user-requests.md:2 --timeout=2sec</tspan></text>
+</svg>
