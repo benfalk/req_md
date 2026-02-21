@@ -1,11 +1,18 @@
 [package]
 name = "reqmd_tui"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 authors = ["Benjamin Falk <benjamin.falk@yahoo.com>"]
 description = "TUI tool for reqmd"
-keywords = ["makdown", "http"]
+keywords = ["markdown", "http"]
 license = "MIT"
+repository = "https://github.com/benfalk/req_md"
+
+[package.metadata.wix]
+upgrade-guid = "62F95563-3225-4213-A8CA-DA4A59E21567"
+path-guid = "B3B2B616-99FE-49A6-884D-F43BBA50CA33"
+license = false
+eula = false
 
 [dependencies]
 clap = { workspace = true, features = ["derive"] }

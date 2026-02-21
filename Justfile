@@ -86,6 +86,7 @@ test-all:
 
 # runs a recipe with a bit of flare
 _run recipe *ARGS:
+  @echo ""
   @echo "⚙️{{BLUE + BOLD}} {{recipe}} {{YELLOW}}{{ARGS}}{{NORMAL}}"
   @just {{recipe}} {{ARGS}}
 

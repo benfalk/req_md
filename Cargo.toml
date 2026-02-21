@@ -40,3 +40,8 @@ url = "2.5.0"
 rstest = "0.26.0"
 mockall = "0.14.0"
 googletest = "0.14"
+
+# The profile that 'dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"
