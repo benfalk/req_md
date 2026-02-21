@@ -16,6 +16,17 @@ dev-cli COMMAND *ARGS:
 dev-tui *ARGS:
   @cargo run -q --package reqmd_tui -- {{ARGS}}
 
+# mdbook documentation with hot reloading
+[group('dev')]
+dev-book:
+  mdbook serve -p 9033 --open
+
+# Setup environment for development
+[group('dev')]
+[no-cd]
+dev-setup:
+  @./scripts/setup-dev-environment.sh
+
 # Builds all crates in the workspace
 [group('build')]
 build:
@@ -26,17 +37,17 @@ build:
 build-rust-docs:
   cargo doc --workspace --no-deps --open
 
-# Builds and installs the CLI crate
+# Installs the CLI reqmd
 [group('build')]
 build-install-cli:
   @just _crate_install reqmd_cli
 
-# Builds and installs experimental TUI crate
+# Installs experimental TUI reqmd_tui
 [group('build')]
 build-install-tui:
   @just _crate_install reqmd_tui
 
-# runs all quick tests or specific functions
+# runs quick tests or specific functions
 [group('test')]
 test *TEST_CASES:
   @{{if TEST_CASES != "" { "just _run test-funcs " + TEST_CASES } \
@@ -48,7 +59,7 @@ test *TEST_CASES:
 test-docs:
   cargo test --doc
 
-# test code comments generate documentation
+# souce comments documentation
 [group('test')]
 test-doc-gen:
   RUSTDOCFLAGS="-D warnings" cargo doc --no-deps
