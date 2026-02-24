@@ -1,5 +1,5 @@
 <!-- markdownlint-disable-file MD024 -->
-# Changelog
+# 📑 Changelog
 
 All notable changes to this project will be documented in this file. The format
 is based on [Keep a Changelog], and this project adheres to [Semantic Versioning].
@@ -9,6 +9,8 @@ is based on [Keep a Changelog], and this project adheres to [Semantic Versioning
 
 ## [Unreleased]
 
+## [0.2.0] 2026-02-23
+
 🎨 Fit and finish for initial release with updated documentation.
 
 ### Added
@@ -17,10 +19,15 @@ is based on [Keep a Changelog], and this project adheres to [Semantic Versioning
 - `dev-book` recipe to build and serve documentation locally
 - `dev-setup` recipe and bootstrap script for local setup
 - `reqmd` CLI documentation with examples and usage instructions
+- `ServerFromHostname` processor plugin added
 
 ### Changed
 
 - Updated README with link to the online documentation
+
+### Fixed
+
+- Allow `:` char in header values
 
 ## [0.1.1] 2026-02-21
 

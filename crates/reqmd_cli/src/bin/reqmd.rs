@@ -11,6 +11,7 @@ async fn main() -> ::anyhow::Result<()> {
         .provider(providers::EnvProvider::default())
         .processor(processors::EnvVarExpansion::default())
         .processor(processors::YamlAsJson::default())
+        .processor(processors::ServerFromHostname::default())
         .build();
 
     match args.command {

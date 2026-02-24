@@ -98,7 +98,7 @@ fn http_headers(input: &str) -> IResult<&str, http::Headers> {
             tag(": "),
             recognize(many1_count(alt((
                 alphanumeric1,
-                is_a(" @!\"#$%^&*()_-+={}[]|;'<>,.?/`~"),
+                is_a(" @!:\"#$%^&*()_-+={}[]|;'<>,.?/`~"),
             )))),
         )
         .parse(input)

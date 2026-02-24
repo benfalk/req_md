@@ -12,3 +12,4 @@
   - [🔌 Builtin Plugins](./reqmd-terminal-app-plugins.md)
   - [📥 Install `reqmd`](./cli-installation-methods.md)
 - [🛠️ Development Setup](./development-setup.md)
+- [📑 Changelog](./changelog.md)

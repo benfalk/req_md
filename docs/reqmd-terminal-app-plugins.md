@@ -50,3 +50,9 @@ Sometimes it can be easier to write request bodies in YAML format, but the API
 you are working with may only accept JSON.  If the body of a request is marked
 with a language tag of `yml` or `yaml` and has a meta tag of `send-as-json` the
 body will be parsed as YAML and then converted to JSON before being sent.
+
+## 🌐 Server from Host Header
+
+Provides a way to specify the server at each request by using the `Host`
+header.  If the `Host` header is present in a request, its value will be used
+as if it was the `server` spcified in the front matter of the document.

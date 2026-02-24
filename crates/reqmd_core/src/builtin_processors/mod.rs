@@ -10,9 +10,11 @@
 //! ---
 
 pub use env_var_expansion::EnvVarExpansion;
+pub use server_from_hostname::ServerFromHostname;
 #[cfg(feature = "yaml-as-json")]
 pub use yaml_as_json::YamlAsJson;
 
 mod env_var_expansion;
+mod server_from_hostname;
 #[cfg(feature = "yaml-as-json")]
 mod yaml_as_json;

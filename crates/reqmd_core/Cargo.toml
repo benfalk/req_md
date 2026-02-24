@@ -1,6 +1,6 @@
 [package]
 name = "reqmd_core"
-version = "0.1.1"
+version = "0.2.0"
 edition = "2024"
 authors = ["Ben Falk <benjamin.falk@yahoo.com>"]
 description = "library interface for all reqmd domain code"
@@ -16,8 +16,8 @@ http-client = ["reqmd_http/reqwest", "reqwest"]
 
 [dependencies]
 bon.workspace = true
-reqmd_http = { version = "0.1.0", path = "../reqmd_http" }
-reqmd_ast = { version = "0.1.0", path = "../reqmd_ast" }
+reqmd_http = { version = "0.2.0", path = "../reqmd_http" }
+reqmd_ast = { version = "0.2.0", path = "../reqmd_ast" }
 thiserror.workspace = true
 url.workspace = true
 
