@@ -4,7 +4,7 @@
 
 Download Windows Installer from latest release:
 
-🔗 **[v0.2.0/reqmd_cli-x86_64-pc-windows-msvc.msi](https://github.com/benfalk/req_md/releases/download/v0.2.0/reqmd_cli-x86_64-pc-windows-msvc.msi)**
+🔗 **[v0.2.1/reqmd_cli-x86_64-pc-windows-msvc.msi](https://github.com/benfalk/req_md/releases/download/v0.2.1/reqmd_cli-x86_64-pc-windows-msvc.msi)**
 
 ## 🐚 Powershell One Liner
 
@@ -12,7 +12,7 @@ Install pre-built binary for Windows with PowerShell one liner:
 
 <!-- markdownlint-disable MD013 -->
 ```bash
-powershell -ExecutionPolicy Bypass -c "irm https://github.com/benfalk/req_md/releases/download/v0.2.0/reqmd_cli-installer.ps1 | iex"
+powershell -ExecutionPolicy Bypass -c "irm https://github.com/benfalk/req_md/releases/download/v0.2.1/reqmd_cli-installer.ps1 | iex"
 ```
 
 ## 🖥️ Linux/MacOS One Liner
@@ -20,7 +20,7 @@ powershell -ExecutionPolicy Bypass -c "irm https://github.com/benfalk/req_md/rel
 Install pre-built binaries for Linux and MacOS with shell one liner:
 
 ```bash
-curl --proto '=https' --tlsv1.2 -LsSf https://github.com/benfalk/req_md/releases/download/v0.2.0/reqmd_cli-installer.sh | sh
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/benfalk/req_md/releases/download/v0.2.1/reqmd_cli-installer.sh | sh
 ```
 <!-- markdownlint-enable MD013 -->
 

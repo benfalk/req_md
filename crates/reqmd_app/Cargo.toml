@@ -1,6 +1,6 @@
 [package]
 name = "reqmd_app"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2024"
 authors = ["Ben Falk <benjamin.falk@yahoo.com>"]
 description = "application library interface for reqmd"
@@ -17,7 +17,7 @@ builtin-providers-and-processors = ["reqmd_core/yaml-as-json"]
 bon.workspace = true
 thiserror.workspace = true
 
-reqmd_core = { version = "0.2.0", path = "../reqmd_core", features = [
+reqmd_core = { version = "0.2.1", path = "../reqmd_core", features = [
   "http-client",
 ] }
 

@@ -55,4 +55,12 @@ body will be parsed as YAML and then converted to JSON before being sent.
 
 Provides a way to specify the server at each request by using the `Host`
 header.  If the `Host` header is present in a request, its value will be used
-as if it was the `server` spcified in the front matter of the document.
+as if it was the `server` spcified in the front matter of the document.  The
+`Host` header is then updated to contain only the host portion to maintain
+http compliance with the header format.
+
+> `Host: https://example.com`
+>
+> becomes:
+>
+> `Host: example.com`

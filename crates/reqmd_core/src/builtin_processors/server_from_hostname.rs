@@ -1,6 +1,7 @@
 use crate::FactoryProcessor;
 use ::reqmd_ast as ast;
 use ::reqmd_http as http;
+use ::std::fmt::Write;
 
 /// # Server From Hostname Processor
 ///
@@ -24,7 +25,7 @@ impl FactoryProcessor for ServerFromHostname {
         _data: &ast::HttpData,
         request: &mut http::Request,
     ) -> Result<(), Box<dyn ::std::error::Error + Send + Sync>> {
-        let Some(hostname) = request.headers.first("host") else {
+        let Some(hostname) = request.headers.first_mut("host") else {
             return Ok(());
         };
 
@@ -33,6 +34,8 @@ impl FactoryProcessor for ServerFromHostname {
         };
 
         request.address = address_string.into();
+        hostname.clear();
+        write!(hostname, "{}", &request.address.host)?;
 
         Ok(())
     }
@@ -53,5 +56,6 @@ mod tests {
         assert_eq!(req.address.port, Some(6767));
         assert_eq!(req.address.host.to_string(), "lmfao.com");
         assert_eq!(req.address.scheme, http::Scheme::Https);
+        assert_eq!(req.headers.first("host"), Some("lmfao.com"));
     }
 }

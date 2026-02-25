@@ -63,6 +63,127 @@ impl Headers {
         self.0.push(HeaderLine::new(key, value));
     }
 
+    /// Provides a mutable iterator over all header values for a given key.
+    ///
+    /// ```rust
+    /// # use reqmd_http::Headers;
+    /// let mut headers = Headers::from_iter([
+    ///     ("foo", "bar"),
+    ///     ("biz", "buz"),
+    ///     ("foo", "rab")
+    /// ]);
+    ///
+    /// for var in headers.values_for_mut("foo") {
+    ///     if var != "bar" {
+    ///         var.make_ascii_uppercase();
+    ///     }
+    /// }
+    ///
+    /// assert_eq!(headers.first("foo"), Some("bar"));
+    /// assert_eq!(headers.first("biz"), Some("buz"));
+    ///
+    /// let foos = headers.values_for("foo").collect::<Vec<_>>();
+    /// assert_eq!(foos, vec!["bar", "RAB"]);
+    /// ```
+    /// ---
+    pub fn values_for_mut(
+        &mut self,
+        key: &str,
+    ) -> impl Iterator<Item = &mut String> {
+        self.0
+            .iter_mut()
+            .filter(|header| header.key.eq_ignore_ascii_case(key))
+            .map(|header| &mut header.value)
+    }
+
+    /// Returns a mutable reference to the first value for a given
+    /// key, if it exists.
+    ///
+    /// Provides a convenient way to update the value the
+    /// first header line matching the specified key.
+    ///
+    /// ```rust
+    /// # use reqmd_http::Headers;
+    /// let mut headers = Headers::from_iter([
+    ///     ("foo", "bar"),
+    ///     ("biz", "buz"),
+    ///     ("foo", "rab")
+    /// ]);
+    ///
+    /// let Some(foo) = headers.first_mut("foo") else {
+    ///     panic!("Expected to find a header with key 'foo'");
+    /// };
+    /// foo.make_ascii_uppercase();
+    /// let foos = headers.values_for("foo").collect::<Vec<_>>();
+    /// assert_eq!(foos, vec!["BAR", "rab"]);
+    /// ```
+    /// ___
+    pub fn first_mut(&mut self, key: &str) -> Option<&mut String> {
+        self.values_for_mut(key).next()
+    }
+
+    /// Removes the first header line matching a key and returns
+    /// it's value if found.
+    ///
+    /// ```rust
+    /// # use reqmd_http::Headers;
+    /// let mut headers = Headers::from_iter([
+    ///     ("foo", "bar"),
+    ///     ("biz", "buz"),
+    ///     ("foo", "rab")
+    /// ]);
+    ///
+    /// let maybe_foo = headers.delete_first("foo");
+    /// assert_eq!(maybe_foo.as_deref(), Some("bar"));
+    /// assert_eq!(headers.first("biz"), Some("buz"));
+    /// assert_eq!(headers.first("foo"), Some("rab"));
+    ///
+    /// let maybe_foo = headers.delete_first("foo");
+    /// assert_eq!(maybe_foo.as_deref(), Some("rab"));
+    /// assert_eq!(headers.first("biz"), Some("buz"));
+    /// assert!(headers.first("foo").is_none());
+    /// ```
+    /// ---
+    pub fn delete_first(&mut self, key: &str) -> Option<String> {
+        self.0
+            .iter()
+            .position(|header| header.key.eq_ignore_ascii_case(key))
+            .map(|pos| self.0.remove(pos).value)
+    }
+
+    /// Removes all header lines matching a key and returns their values.
+    ///
+    /// ```rust
+    /// # use reqmd_http::Headers;
+    ///
+    /// let mut headers = Headers::from_iter([
+    ///     ("foo", "bar"),
+    ///     ("biz", "buz"),
+    ///     ("foo", "rab")
+    /// ]);
+    ///
+    /// let foos = headers.delete_all("foo");
+    ///
+    /// assert_eq!(foos, vec!["bar".to_string(), "rab".to_string()]);
+    /// assert_eq!(headers.first("biz"), Some("buz"));
+    /// assert!(headers.first("foo").is_none());
+    /// ```
+    /// ---
+    pub fn delete_all(&mut self, key: &str) -> Vec<String> {
+        let mut deleted_values = Vec::with_capacity(4);
+        self.0.retain_mut(|header| {
+            if header.key.eq_ignore_ascii_case(key) {
+                let mut deleted = String::new();
+                std::mem::swap(&mut deleted, &mut header.value);
+                deleted_values.push(deleted);
+                false
+            } else {
+                true
+            }
+        });
+        deleted_values
+    }
+
     /// Adds a new header line from a tuple of key and value.
     pub fn insert_many<I, T>(&mut self, iter: I)
     where

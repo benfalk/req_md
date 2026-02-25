@@ -1,6 +1,6 @@
 [package]
 name = "reqmd_cli"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2024"
 authors = ["Benjamin Falk <benjamin.falk@yahoo.com>"]
 description = "CLI tool for reqmd"
@@ -27,4 +27,4 @@ serde.workspace = true
 serde_json.workspace = true
 tokio.workspace = true
 
-reqmd_app = { version = "0.2.0", path = "../reqmd_app" }
+reqmd_app = { version = "0.2.1", path = "../reqmd_app" }
